@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">👥 User Management</div>
+      <div class="dashboard-sub">View, edit and manage all platform users</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+      <input type="text" class="form-control" placeholder="🔍 Search users..." style="max-width:260px">
+      <select class="filter-select">
+        <option>All Roles</option><option>Buyer</option><option>Seller</option><option>Admin</option>
+      </select>
+      <select class="filter-select">
+        <option>All Status</option><option>Verified</option><option>Unverified</option><option>Banned</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Verified</th><th>Balance</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+          <% users.forEach(u => { %>
+            <tr>
+              <td class="font-mono text-sm text-muted"><%= u.id %></td>
+              <td><div style="font-weight:600"><%= u.username %></div></td>
+              <td class="text-dim text-sm"><%= u.email %></td>
+              <td><span class="tag <%= u.role === 'admin' ? '' : u.role === 'seller' ? 'tag-green' : '' %>"><%= u.role %></span></td>
+              <td><%= u.verified ? '<span class="text-green font-bold">✅</span>' : '<span class="text-muted">—</span>' %></td>
+              <td class="text-gold font-bold"><%= (u.balance||0).toLocaleString() %> EGP</td>
+              <td class="text-muted text-sm"><%= u.joinDate %></td>
+              <td>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-ghost btn-sm">👁</button>
+                  <button class="btn btn-outline btn-sm">✏️</button>
+                  <button class="btn btn-red btn-sm">🚫</button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

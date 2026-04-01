@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/seller-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header" style="text-align:center">
+      <div class="section-eyebrow" style="justify-content:center;display:flex">Upgrade Your Account</div>
+      <div class="dashboard-title" style="font-size:36px">Choose Your <span class="text-gold">Premium</span> Plan</div>
+      <div class="dashboard-sub" style="margin:0 auto;max-width:480px">Lower commissions, more visibility, advanced analytics. Upgrade and earn more.</div>
+    </div>
+
+    <div class="plans-grid">
+      <% plans.forEach((plan, i) => { %>
+        <div class="plan-card <%= i === 1 ? 'featured' : '' %>">
+          <% if (i === 1) { %><div class="plan-badge">⭐ Most Popular</div><% } %>
+          <% if (i === 2) { %><div class="plan-badge" style="background:var(--purple)">👑 Best Value</div><% } %>
+
+          <div>
+            <div class="plan-name"><%= plan.name %></div>
+            <div class="plan-price">
+              <%= plan.price === 0 ? 'Free' : plan.price.toLocaleString() %>
+              <% if (plan.price > 0) { %><span>EGP/mo</span><% } %>
+            </div>
+            <div class="plan-commission">✅ Only <%= plan.commission %>% commission on sales</div>
+          </div>
+
+          <ul class="plan-features">
+            <% plan.features.forEach(f => { %>
+              <li class="plan-feature"><%= f %></li>
+            <% }) %>
+          </ul>
+
+          <% if (plan.price === 0) { %>
+            <button class="btn btn-ghost btn-block" disabled>Current Plan</button>
+          <% } else { %>
+            <form action="/seller/premium" method="POST">
+              <input type="hidden" name="planId" value="<%= plan.id %>">
+              <button type="submit" class="btn <%= i === 2 ? 'btn-gold' : 'btn-green' %> btn-block btn-lg">
+                Upgrade to <%= plan.name %> →
+              </button>
+            </form>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Comparison table -->
+    <div class="card" style="margin-top:48px">
+      <div class="card-header" style="font-weight:700;font-size:18px">📊 Full Feature Comparison</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th style="text-align:center">Basic</th>
+              <th style="text-align:center;color:var(--green)">Pro</th>
+              <th style="text-align:center;color:var(--gold)">Elite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% const features = [
+              ['Commission rate','10%','7%','4%'],
+              ['Active listings','5','20','Unlimited'],
+              ['Featured placement','No','Yes','Priority'],
+              ['Analytics','Basic','Advanced','Full Suite'],
+              ['Support','Standard','Priority','24/7 VIP'],
+              ['Seller badge','None','Pro','Elite'],
+              ['Affiliate program','No','No','Yes'],
+              ['Streak bonuses','Yes','Yes','Yes'],
+              ['Goal rewards','Yes','Yes','Yes']
+            ]; %>
+            <% features.forEach(row => { %>
+              <tr>
+                <td style="font-weight:600"><%= row[0] %></td>
+                <td style="text-align:center;color:var(--text-dim)"><%= row[1] %></td>
+                <td style="text-align:center;color:var(--green);font-weight:600"><%= row[2] %></td>
+                <td style="text-align:center;color:var(--gold);font-weight:600"><%= row[3] %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

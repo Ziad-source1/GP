@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/buyer-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">⚖️ Disputes</div>
+      <div class="dashboard-sub">Manage your open and resolved disputes</div>
+    </div>
+
+    <% if (disputes.length > 0) { %>
+      <% disputes.forEach(d => { %>
+        <div class="card" style="margin-bottom:16px;border-color:rgba(255,71,87,0.2)">
+          <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-weight:700;color:var(--red)">⚖️ Dispute #<%= d.id %></span>
+            <span class="status status-disputed"><%= d.status %></span>
+          </div>
+          <div class="card-body">
+            <div class="grid-2" style="gap:16px;margin-bottom:16px">
+              <div>
+                <div class="form-label">Order</div>
+                <div class="font-mono text-green">#<%= d.orderId %></div>
+              </div>
+              <div>
+                <div class="form-label">Opened</div>
+                <div class="text-dim"><%= d.createdAt %></div>
+              </div>
+              <div style="grid-column:1/-1">
+                <div class="form-label">Reason</div>
+                <div><%= d.reason %></div>
+              </div>
+              <div style="grid-column:1/-1">
+                <div class="form-label">Evidence</div>
+                <div class="text-dim"><%= d.evidence %></div>
+              </div>
+            </div>
+            <div style="background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.15);border-radius:8px;padding:14px;margin-bottom:16px">
+              <div style="font-weight:700;font-size:13px;color:var(--red);margin-bottom:6px">⚠️ Dispute Under Review</div>
+              <div style="font-size:13px;color:var(--text-dim)">Our team is reviewing your case. Expected resolution: 24–48 hours. We may contact you for more information.</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm">📎 Add Evidence</button>
+              <button class="btn btn-ghost btn-sm">💬 Chat with Support</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state-icon">⚖️</div>
+        <div class="empty-state-title">No disputes</div>
+        <p>Great! You have no active disputes. All your trades are running smoothly.</p>
+      </div>
+    <% } %>
+
+    <!-- Open new dispute -->
+    <div class="card" style="margin-top:24px">
+      <div class="card-header" style="font-weight:700">➕ Open a New Dispute</div>
+      <div class="card-body">
+        <form action="/buyer/disputes" method="POST">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Order ID</label>
+              <input type="text" name="orderId" class="form-control" placeholder="e.g. ORD-002">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dispute Reason</label>
+              <select name="reason" class="form-control">
+                <option>Item not delivered</option>
+                <option>Wrong item delivered</option>
+                <option>Seller not responding</option>
+                <option>Account banned after purchase</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" placeholder="Describe the issue in detail..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload Evidence (Screenshots)</label>
+            <div class="file-upload">
+              <input type="file" multiple accept="image/*" style="display:none" id="evidence-upload">
+              <div class="file-upload-icon">📎</div>
+              <div class="file-upload-text">Click to upload screenshots · <strong>Max 5 files, 5MB each</strong></div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-red">⚖️ Submit Dispute</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

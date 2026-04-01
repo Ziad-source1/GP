@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+<div class="page-header"><div class="container"><h1 class="page-title">📜 Terms & Conditions</h1><p class="page-subtitle">Last updated: January 2024</p></div></div>
+<div class="container-sm" style="padding:56px 24px">
+  <% const sections = [
+    {title:'1. Acceptance of Terms',body:'By creating an account on LEVEL UP, you agree to these Terms and Conditions and our Privacy Policy. If you do not agree, you must not use our platform. These terms apply to all users including buyers, sellers, and visitors.'},
+    {title:'2. Eligibility',body:'You must be at least 18 years old to use LEVEL UP. By registering, you confirm you are of legal age in Egypt. LEVEL UP reserves the right to suspend accounts of users found to be underage.'},
+    {title:'3. Seller Verification',body:'Sellers are required to complete identity verification using a valid Egyptian national ID, passport, or driving license. Providing false documents is strictly prohibited and will result in permanent account termination and potential legal action.'},
+    {title:'4. Escrow System',body:'All transactions on LEVEL UP are conducted through our secure escrow system. Funds are held until buyers confirm delivery. Sellers must not request payment outside of the platform. Attempting to bypass escrow is grounds for immediate account termination.'},
+    {title:'5. Prohibited Items',body:'The following are strictly prohibited: stolen game accounts, cheating software, anything that violates game publishers\' terms of service, illegal goods, or anything that could cause harm to buyers. LEVEL UP reserves the right to remove any listing at its sole discretion.'},
+    {title:'6. Dispute Resolution',body:'In the event of a dispute, both parties must submit evidence within 72 hours. LEVEL UP admins will review the case and make a binding decision. Our decision is final. Disputes must be opened within 48 hours of the agreed delivery time.'},
+    {title:'7. Commission & Fees',body:'LEVEL UP charges a commission on each completed sale. Basic sellers pay 10%, Pro 7%, Elite 4%. Fees are deducted automatically from the escrow release. Platform fees are non-refundable.'},
+    {title:'8. Account Termination',body:'LEVEL UP may suspend or permanently ban any account that violates these terms, engages in fraudulent activity, attempts to harm other users, or repeatedly receives dispute complaints. Termination decisions are final.'}
+  ]; %>
+  <% sections.forEach(s => { %>
+    <div style="margin-bottom:28px">
+      <h3 style="font-size:18px;font-weight:800;color:var(--green);margin-bottom:10px"><%= s.title %></h3>
+      <p style="color:var(--text-dim);font-size:14px;line-height:1.8"><%= s.body %></p>
+    </div>
+    <div class="divider"></div>
+  <% }) %>
+  <div style="text-align:center;margin-top:40px">
+    <a href="/pages/contact" class="btn btn-outline">Questions? Contact Us</a>
+  </div>
+</div>
+<%- include('../partials/footer') %>

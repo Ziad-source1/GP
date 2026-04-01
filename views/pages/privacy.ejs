@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<div class="page-header"><div class="container"><h1 class="page-title">🔐 Privacy Policy</h1><p class="page-subtitle">How we collect, use and protect your data</p></div></div>
+<div class="container-sm" style="padding:56px 24px">
+  <% const privSections = [
+    {title:'Data We Collect',body:'We collect: your email address and username for account creation; national ID documents for seller verification (encrypted and stored securely); payment method details processed through PCI-compliant gateways; order history and transaction logs; chat messages between buyers and sellers within the platform.'},
+    {title:'How We Use Your Data',body:'Your data is used to: operate and improve the LEVEL UP platform; verify seller identities; process payments and escrow transactions; resolve disputes; detect and prevent fraud; send transactional notifications about your orders and account.'},
+    {title:'Data Security',body:'All sensitive data including verification documents are encrypted with AES-256. We never store raw card numbers. Our servers are protected with industry-standard security protocols. Verification documents are accessible only to authorized admin staff and are deleted after 90 days.'},
+    {title:'Data Sharing',body:'We never sell your personal data to third parties. We may share minimal data with payment processors (Fawry, Vodafone Cash) solely to process transactions. We may disclose data to law enforcement if legally required.'},
+    {title:'Your Rights',body:'You have the right to: request a copy of your personal data; request deletion of your account and data (subject to legal retention requirements); update your profile information at any time; opt out of non-essential communications.'},
+    {title:'Cookies',body:'We use essential cookies to maintain your login session and security tokens. We do not use tracking or advertising cookies. You can clear cookies at any time in your browser settings.'}
+  ]; %>
+  <% privSections.forEach(s => { %>
+    <div style="margin-bottom:28px">
+      <h3 style="font-size:18px;font-weight:800;color:var(--green);margin-bottom:10px">🔒 <%= s.title %></h3>
+      <p style="color:var(--text-dim);font-size:14px;line-height:1.8"><%= s.body %></p>
+    </div>
+    <div class="divider"></div>
+  <% }) %>
+  <div style="text-align:center;margin-top:40px">
+    <a href="/pages/contact" class="btn btn-outline">Privacy Questions? Contact Us</a>
+  </div>
+</div>
+<%- include('../partials/footer') %>

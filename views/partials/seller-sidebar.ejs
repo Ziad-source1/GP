@@ -1,0 +1,62 @@
+<div class="sidebar">
+  <div style="padding:16px 24px;border-bottom:1px solid var(--border);margin-bottom:8px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">Seller Panel</div>
+    <div style="font-size:14px;font-weight:700;margin-top:4px;color:var(--text)"><%= user ? user.username : 'Seller' %></div>
+    <% if (user && user.badge === 'premium') { %>
+      <span class="nav-badge badge-premium" style="margin-top:6px;display:inline-flex">⭐ Premium</span>
+    <% } else if (user && user.verified) { %>
+      <span class="nav-badge badge-verified" style="margin-top:6px;display:inline-flex">✓ Verified</span>
+    <% } %>
+  </div>
+
+  <div class="sidebar-label">Overview</div>
+  <div class="sidebar-section">
+    <a href="/seller/dashboard" class="sidebar-link <%= currentPath === '/seller/dashboard' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">📊</span> Dashboard
+    </a>
+    <a href="/seller/earnings" class="sidebar-link <%= currentPath === '/seller/earnings' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">💰</span> Earnings
+    </a>
+  </div>
+
+  <div class="sidebar-label">Listings</div>
+  <div class="sidebar-section">
+    <a href="/seller/create-listing" class="sidebar-link <%= currentPath === '/seller/create-listing' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">➕</span> Create Listing
+    </a>
+    <a href="/seller/listings" class="sidebar-link <%= currentPath === '/seller/listings' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">📋</span> Manage Listings
+    </a>
+  </div>
+
+  <div class="sidebar-label">Orders</div>
+  <div class="sidebar-section">
+    <a href="/seller/orders" class="sidebar-link <%= currentPath === '/seller/orders' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">📦</span> Orders
+      <span class="sidebar-badge">2</span>
+    </a>
+  </div>
+
+  <div class="sidebar-label">Progress</div>
+  <div class="sidebar-section">
+    <a href="/seller/streak" class="sidebar-link <%= currentPath === '/seller/streak' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🔥</span> Trade Streak
+    </a>
+    <a href="/seller/goal" class="sidebar-link <%= currentPath === '/seller/goal' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🎯</span> Trade Goal
+    </a>
+    <a href="/seller/affiliate" class="sidebar-link <%= currentPath === '/seller/affiliate' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🔗</span> Affiliate
+    </a>
+  </div>
+
+  <div class="sidebar-label">Account</div>
+  <div class="sidebar-section">
+    <a href="/seller/verification" class="sidebar-link <%= currentPath === '/seller/verification' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🪪</span> Verification
+    </a>
+    <a href="/seller/premium" class="sidebar-link <%= currentPath === '/seller/premium' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⭐</span> Go Premium
+    </a>
+  </div>
+</div>

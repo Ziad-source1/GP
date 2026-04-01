@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--black2)">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:48px;max-width:440px;width:100%;text-align:center">
+    <div style="font-size:56px;margin-bottom:16px">📧</div>
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:8px">Verify Your Email</h2>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:32px">We sent a 6-digit OTP to your email. Enter it below to activate your account.</p>
+    <form action="/auth/verify" method="POST">
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:24px">
+        <% for(let i=0;i<6;i++) { %>
+          <input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;background:var(--black2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-size:22px;font-weight:700;font-family:'Rajdhani',sans-serif;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'" oninput="if(this.value.length===1&&this.nextElementSibling)this.nextElementSibling.focus()">
+        <% } %>
+      </div>
+      <button type="submit" class="btn btn-green btn-block btn-lg" style="margin-bottom:16px">Verify Account ✅</button>
+      <button type="button" style="background:none;border:none;color:var(--green);font-size:13px;cursor:pointer;font-family:'Exo 2',sans-serif">Resend OTP (60s)</button>
+    </form>
+  </div>
+</div>
+<%- include('../partials/footer') %>

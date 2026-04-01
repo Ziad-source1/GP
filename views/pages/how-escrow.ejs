@@ -1,0 +1,103 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">🔒 How Escrow Works</h1>
+    <p class="page-subtitle">Your money is always protected — every single trade on LEVEL UP</p>
+  </div>
+</div>
+
+<div class="container" style="padding:64px 24px">
+
+  <!-- Hero steps -->
+  <div style="background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:48px;margin-bottom:56px;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 30%,rgba(0,255,136,0.05),transparent)"></div>
+    <div style="position:relative;z-index:2">
+      <div style="text-align:center;margin-bottom:48px">
+        <div class="section-eyebrow" style="display:inline-block">Step by Step</div>
+        <h2 style="font-size:36px;font-weight:900">The LEVEL UP Escrow Flow</h2>
+      </div>
+      <div class="escrow-steps">
+        <% const steps = [
+          {icon:'🛒',label:'Buyer Places Order',sub:'Chooses listing and pays'},
+          {icon:'🔒',label:'Funds Locked',sub:'Money held in secure escrow'},
+          {icon:'📦',label:'Seller Delivers',sub:'Item/service provided'},
+          {icon:'✅',label:'Buyer Confirms',sub:'Receipt acknowledged'},
+          {icon:'💰',label:'Seller Paid',sub:'Funds released instantly'}
+        ]; %>
+        <% steps.forEach((s,i) => { %>
+          <div class="escrow-step active">
+            <div class="escrow-step-icon"><%= s.icon %></div>
+            <% if (i < steps.length - 1) { %><div class="escrow-step-line"></div><% } %>
+            <div class="escrow-step-label"><%= s.label %></div>
+            <div class="escrow-step-sub"><%= s.sub %></div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed explanation -->
+  <div class="grid-2" style="gap:32px;margin-bottom:56px">
+    <% const phases = [
+      {icon:'💳',title:'Step 1 — Payment to Escrow',color:'var(--cyan)',
+       body:'When you place an order, your payment is immediately transferred to our secure escrow account — not to the seller. This ensures the seller cannot take your money without delivering.'},
+      {icon:'📦',title:'Step 2 — Seller Delivers',color:'var(--green)',
+       body:'The seller receives a notification and has an agreed-upon time window to deliver your item. You can chat directly with the seller through our built-in order chat.'},
+      {icon:'✅',title:'Step 3 — Buyer Confirms',color:'var(--gold)',
+       body:'Once you receive your item, you click "Confirm Receipt." This is the signal that releases the funds. Never confirm until you\'ve verified what you received.'},
+      {icon:'💰',title:'Step 4 — Seller Gets Paid',color:'var(--purple)',
+       body:'Funds are instantly released from escrow to the seller\'s LEVEL UP wallet, minus the platform commission. The seller can withdraw anytime.'}
+    ]; %>
+    <% phases.forEach(p => { %>
+      <div class="card card-green" style="padding:0">
+        <div style="padding:24px;border-left:4px solid <%= p.color %>">
+          <div style="font-size:28px;margin-bottom:12px"><%= p.icon %></div>
+          <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:<%= p.color %>"><%= p.title %></h3>
+          <p style="font-size:14px;color:var(--text-dim);line-height:1.7"><%= p.body %></p>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Dispute section -->
+  <div style="background:rgba(255,71,87,0.05);border:1px solid rgba(255,71,87,0.2);border-radius:16px;padding:40px;margin-bottom:56px">
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div style="font-size:56px">⚖️</div>
+      <div>
+        <h3 style="font-size:24px;font-weight:800;margin-bottom:12px">What If There's a Problem?</h3>
+        <p style="color:var(--text-dim);font-size:15px;margin-bottom:16px;max-width:600px;line-height:1.7">If the seller doesn't deliver, delivers incorrectly, or you have any issue — open a dispute from your order page. Our admin team reviews all evidence within 24 hours and makes a fair decision.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim)">✅ Full refund if seller at fault</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim)">✅ 24-hour resolution target</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim)">✅ Evidence-based decisions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <h2 style="font-size:28px;font-weight:800;margin-bottom:24px">Escrow FAQ</h2>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <% const escrowFaqs = [
+      {q:'How long does escrow hold funds?', a:'Funds are held until you confirm delivery OR until a dispute is resolved. If you don\'t confirm within 72 hours after the seller marks delivery, funds are automatically released.'},
+      {q:'Is my payment information safe?', a:'Yes. We never store raw card numbers. All payments are processed through PCI-compliant gateways.'},
+      {q:'Can I get a refund if I change my mind?', a:'Refunds are only issued if the seller fails to deliver or delivers incorrectly. Buyer\'s remorse alone is not eligible for a refund.'},
+      {q:'What happens if a seller disappears?', a:'If the seller does not respond or deliver within the agreed time, you can open a dispute and receive a full refund from escrow.'}
+    ]; %>
+    <% escrowFaqs.forEach(f => { %>
+      <details style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px">
+        <summary style="font-weight:700;cursor:pointer;font-size:15px;list-style:none;display:flex;align-items:center;justify-content:space-between">
+          <%= f.q %> <span style="color:var(--green)">+</span>
+        </summary>
+        <p style="color:var(--text-dim);font-size:14px;margin-top:12px;line-height:1.7"><%= f.a %></p>
+      </details>
+    <% }) %>
+  </div>
+
+  <div style="text-align:center;margin-top:48px">
+    <a href="/marketplace" class="btn btn-green btn-lg">🛒 Start Shopping Safely</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

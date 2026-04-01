@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/seller-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">🔗 Affiliate Program</div>
+      <div class="dashboard-sub">Earn 5 EGP per referral + 2% of their first purchase</div>
+    </div>
+
+    <!-- Referral link -->
+    <div style="background:linear-gradient(135deg,#0F1A2A,#0A1520);border:1px solid rgba(0,207,255,0.25);border-radius:16px;padding:28px;margin-bottom:24px">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;font-weight:700">Your Referral Link</div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <code style="flex:1;background:var(--black);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:14px">
+          https://levelup.gg/ref/<%= affiliate.code %>
+        </code>
+        <button class="btn btn-outline" data-copy="https://levelup.gg/ref/<%= affiliate.code %>">📋 Copy Link</button>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <span style="font-size:13px;color:var(--text-muted)">Share via:</span>
+        <button class="btn btn-ghost btn-sm">📘 Facebook</button>
+        <button class="btn btn-ghost btn-sm">💬 WhatsApp</button>
+        <button class="btn btn-ghost btn-sm">📸 Instagram</button>
+        <button class="btn btn-ghost btn-sm">🐦 Twitter</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-cards" style="margin-bottom:24px">
+      <div class="stat-card">
+        <div class="stat-card-icon">👆</div>
+        <div class="stat-card-label">Link Clicks</div>
+        <div class="stat-card-value"><%= affiliate.clicks %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">👥</div>
+        <div class="stat-card-label">Signups</div>
+        <div class="stat-card-value text-green"><%= affiliate.signups %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">💰</div>
+        <div class="stat-card-label">Total Earned</div>
+        <div class="stat-card-value text-green"><%= affiliate.earnings %> EGP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">📤</div>
+        <div class="stat-card-label">Pending Payout</div>
+        <div class="stat-card-value text-gold"><%= affiliate.pendingPayout %> EGP</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:24px">
+      <!-- How it works -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">💡 How It Works</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);flex-shrink:0">1</div>
+              <div><div style="font-weight:700;margin-bottom:2px">Share your link</div><div style="font-size:13px;color:var(--text-dim)">Share your unique referral link on social media, gaming groups, or with friends</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);flex-shrink:0">2</div>
+              <div><div style="font-weight:700;margin-bottom:2px">They register</div><div style="font-size:13px;color:var(--text-dim)">You earn <span style="color:var(--green);font-weight:700">5 EGP</span> for every new user who registers using your link</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);flex-shrink:0">3</div>
+              <div><div style="font-weight:700;margin-bottom:2px">They buy</div><div style="font-size:13px;color:var(--text-dim)">Earn <span style="color:var(--gold);font-weight:700">2%</span> of their first purchase — automatically credited to your wallet</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payout -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📤 Request Payout</div>
+        <div class="card-body">
+          <div style="text-align:center;padding:20px 0">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Available for Withdrawal</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:900;color:var(--gold)"><%= affiliate.pendingPayout %> EGP</div>
+            <div style="font-size:12px;color:var(--text-muted)">Total paid out: <%= affiliate.totalPaid %> EGP</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payout Method</label>
+            <select class="form-control">
+              <option>📱 Vodafone Cash</option>
+              <option>🏦 Bank Transfer</option>
+              <option>💰 Add to Wallet</option>
+            </select>
+          </div>
+          <button class="btn btn-gold btn-block">📤 Request Payout</button>
+          <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px">Min payout: 50 EGP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

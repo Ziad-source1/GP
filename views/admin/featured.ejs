@@ -1,0 +1,49 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">⭐ Featured Listings Control</div>
+      <div class="dashboard-sub">Manage which listings appear as featured on the homepage and marketplace</div>
+    </div>
+
+    <div class="alert alert-gold">⭐ Currently <strong><%= featured.length %></strong> listings are featured. Max 8 featured slots available.</div>
+
+    <div class="grid-2" style="gap:24px">
+      <!-- Currently featured -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">⭐ Currently Featured (<%= featured.length %>/8)</div>
+        <% if (featured.length > 0) { %>
+          <% featured.forEach(l => { %>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
+              <div style="font-size:24px">🎮</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%= l.title %></div>
+                <div style="font-size:11px;color:var(--text-muted)"><%= l.sellerName %> · <%= l.price.toLocaleString() %> EGP</div>
+              </div>
+              <button class="btn btn-red btn-sm">✕ Remove</button>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="empty-state" style="padding:32px"><div>No featured listings</div></div>
+        <% } %>
+      </div>
+
+      <!-- All listings to feature -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📋 Add to Featured</div>
+        <% listings.filter(l => !l.featured).forEach(l => { %>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
+            <div style="font-size:20px">🎮</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%= l.title %></div>
+              <div style="font-size:11px;color:var(--text-muted)"><%= l.sellerName %> · <%= l.sales %> sold</div>
+            </div>
+            <button class="btn btn-gold btn-sm">⭐ Feature</button>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,50 @@
+<div class="sidebar">
+  <div style="padding:16px 24px;border-bottom:1px solid var(--border);margin-bottom:8px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--purple)">Admin Panel</div>
+    <div style="font-size:14px;font-weight:700;margin-top:4px"><%= user ? user.username : 'Admin' %></div>
+    <span class="nav-badge badge-admin" style="margin-top:6px;display:inline-flex">🛡 Admin</span>
+  </div>
+
+  <div class="sidebar-label">Overview</div>
+  <div class="sidebar-section">
+    <a href="/admin/dashboard" class="sidebar-link <%= currentPath === '/admin/dashboard' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">📊</span> Dashboard
+    </a>
+    <a href="/admin/users" class="sidebar-link <%= currentPath === '/admin/users' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">👥</span> User Management
+    </a>
+  </div>
+
+  <div class="sidebar-label">Verification</div>
+  <div class="sidebar-section">
+    <a href="/admin/verification" class="sidebar-link <%= currentPath === '/admin/verification' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🪪</span> Seller Verification
+      <span class="sidebar-badge">3</span>
+    </a>
+  </div>
+
+  <div class="sidebar-label">Trading</div>
+  <div class="sidebar-section">
+    <a href="/admin/escrow" class="sidebar-link <%= currentPath === '/admin/escrow' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🔒</span> Escrow Monitor
+    </a>
+    <a href="/admin/disputes" class="sidebar-link <%= currentPath === '/admin/disputes' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⚖️</span> Disputes
+      <span class="sidebar-badge">1</span>
+    </a>
+    <a href="/admin/fraud" class="sidebar-link <%= currentPath === '/admin/fraud' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🚨</span> Fraud Detection
+      <span class="sidebar-badge" style="background:var(--red)">2</span>
+    </a>
+  </div>
+
+  <div class="sidebar-label">Settings</div>
+  <div class="sidebar-section">
+    <a href="/admin/commission" class="sidebar-link <%= currentPath === '/admin/commission' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⚙️</span> Commission
+    </a>
+    <a href="/admin/featured" class="sidebar-link <%= currentPath === '/admin/featured' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⭐</span> Featured Listings
+    </a>
+  </div>
+</div>

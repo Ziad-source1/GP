@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'LEVEL UP' %></title>
+  <meta name="description" content="LEVEL UP — Egypt's #1 Gaming Marketplace. Buy & Sell game currency, accounts, gift cards, boosting services safely with escrow protection.">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5' fill='%2300FF88'/><text y='.9em' font-size='55' x='25' font-weight='900' fill='%230B0F14'>L</text></svg>">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">LU</div>
+      <span class="nav-logo-text">LEVEL <span>UP</span></span>
+    </a>
+
+    <div class="nav-links">
+      <a href="/marketplace">Marketplace</a>
+      <a href="/marketplace/category/currency">Currency</a>
+      <a href="/marketplace/category/accounts">Accounts</a>
+      <a href="/marketplace/category/giftcards">Gift Cards</a>
+      <a href="/pages/how-escrow">Escrow</a>
+      <a href="/pages/about">About</a>
+    </div>
+
+    <div class="nav-spacer"></div>
+
+    <form class="nav-search" action="/marketplace" method="GET">
+      <input type="text" name="search" placeholder="Search games, items..." value="<%= typeof query !== 'undefined' && query.search ? query.search : '' %>">
+      <button type="submit">🔍</button>
+    </form>
+
+    <div class="nav-actions">
+      <% if (user) { %>
+        <div class="nav-wallet">
+          💰 <%= user.balance ? user.balance.toLocaleString() : '0' %> EGP
+        </div>
+
+        <div class="nav-dropdown" style="position:relative">
+          <div class="nav-avatar" title="<%= user.username %>">
+            <%= user.username.charAt(0).toUpperCase() %>
+          </div>
+          <div class="nav-dropdown-menu">
+            <div style="padding:8px 12px 4px; font-size:13px; font-weight:700; color:var(--text)"><%= user.username %></div>
+            <% if (user.badge) { %>
+              <div style="padding:0 12px 8px">
+                <% if (user.badge === 'premium') { %><span class="nav-badge badge-premium">⭐ Premium</span><% } %>
+                <% if (user.badge === 'admin') { %><span class="nav-badge badge-admin">🛡 Admin</span><% } %>
+              </div>
+            <% } %>
+            <div class="separator"></div>
+            <% if (user.role === 'admin') { %>
+              <a href="/admin/dashboard">🛡 Admin Panel</a>
+            <% } %>
+            <% if (user.role === 'seller' || user.role === 'admin') { %>
+              <a href="/seller/dashboard">📊 Seller Dashboard</a>
+              <a href="/seller/create-listing">➕ Create Listing</a>
+            <% } %>
+            <a href="/buyer/dashboard">🎮 Buyer Dashboard</a>
+            <a href="/buyer/wallet">💰 My Wallet</a>
+            <a href="/buyer/notifications">🔔 Notifications</a>
+            <div class="separator"></div>
+            <a href="/auth/logout" style="color:var(--red)">⬆️ Logout</a>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/auth/login" class="btn-nav btn-nav-ghost">Login</a>
+        <a href="/auth/register" class="btn-nav btn-nav-green">Register</a>
+      <% } %>
+    </div>
+
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+<% if (success && success.length > 0) { %>
+  <div style="position:fixed;top:80px;right:24px;z-index:999;min-width:280px">
+    <div class="alert alert-success animate-fade-up">✅ <%= success[0] %></div>
+  </div>
+<% } %>
+<% if (error && error.length > 0) { %>
+  <div style="position:fixed;top:80px;right:24px;z-index:999;min-width:280px">
+    <div class="alert alert-error animate-fade-up">⚠️ <%= error[0] %></div>
+  </div>
+<% } %>

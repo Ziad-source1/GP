@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">⚖️ Dispute Resolution</div>
+      <div class="dashboard-sub">Review and resolve buyer/seller disputes</div>
+    </div>
+    <% if (disputes.length > 0) { %>
+      <% disputes.forEach(d => { %>
+        <div class="card" style="margin-bottom:16px;border-color:rgba(255,71,87,0.2)">
+          <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-weight:700;color:var(--red)">⚖️ Dispute #<%= d.id %></span>
+            <span class="status status-disputed"><%= d.status %></span>
+          </div>
+          <div class="card-body">
+            <div class="grid-2" style="gap:16px;margin-bottom:16px">
+              <div><div class="form-label">Order</div><div class="font-mono text-green">#<%= d.orderId %></div></div>
+              <div><div class="form-label">Opened</div><div class="text-dim"><%= d.createdAt %></div></div>
+              <div><div class="form-label">Buyer ID</div><div>#<%= d.buyerId %></div></div>
+              <div><div class="form-label">Seller ID</div><div>#<%= d.sellerId %></div></div>
+              <div style="grid-column:1/-1"><div class="form-label">Reason</div><div><%= d.reason %></div></div>
+              <div style="grid-column:1/-1"><div class="form-label">Evidence</div><div class="text-dim"><%= d.evidence %></div></div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Admin Resolution Note</label>
+              <textarea class="form-control" rows="3" placeholder="Explain your decision..."></textarea>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-green">✅ Resolve — Refund Buyer</button>
+              <button class="btn btn-gold">💰 Resolve — Release to Seller</button>
+              <button class="btn btn-ghost btn-sm">📧 Contact Both Parties</button>
+              <button class="btn btn-ghost btn-sm">⏳ Mark Under Review</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state-icon">✅</div>
+        <div class="empty-state-title">No open disputes</div>
+        <p>The platform is dispute-free right now!</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+<%- include('../partials/footer') %>

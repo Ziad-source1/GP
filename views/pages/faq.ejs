@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">❓ Frequently Asked Questions</h1>
+    <p class="page-subtitle">Find answers to the most common questions about LEVEL UP</p>
+  </div>
+</div>
+
+<div class="container-sm" style="padding:64px 24px">
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <% faqs.forEach((faq, i) => { %>
+      <details style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden" <%= i === 0 ? 'open' : '' %>>
+        <summary style="padding:18px 20px;font-weight:700;font-size:15px;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;user-select:none">
+          <span>❓ <%= faq.q %></span>
+          <span style="color:var(--green);font-size:18px;transition:transform 0.2s">+</span>
+        </summary>
+        <div style="padding:0 20px 18px;color:var(--text-dim);font-size:14px;line-height:1.7;border-top:1px solid var(--border)">
+          <div style="margin-top:14px"><%= faq.a %></div>
+        </div>
+      </details>
+    <% }) %>
+  </div>
+
+  <!-- Still need help -->
+  <div style="text-align:center;background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:48px;margin-top:48px">
+    <div style="font-size:40px;margin-bottom:12px">🎧</div>
+    <h3 style="font-size:22px;font-weight:900;margin-bottom:8px">Still Have Questions?</h3>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:24px">Our support team is available 7 days a week to help you</p>
+    <a href="/pages/contact" class="btn btn-green btn-lg">Contact Support</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

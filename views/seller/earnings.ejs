@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/seller-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">💰 Earnings & Analytics</div>
+      <div class="dashboard-sub">Detailed revenue breakdown and performance metrics</div>
+    </div>
+
+    <div class="stat-cards" style="margin-bottom:24px">
+      <div class="stat-card">
+        <div class="stat-card-label">Total Revenue</div>
+        <div class="stat-card-value text-green"><%= analytics.totalRevenue.toLocaleString() %> EGP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">This Month</div>
+        <div class="stat-card-value text-green"><%= analytics.thisMonth.toLocaleString() %> EGP</div>
+        <div class="stat-card-change up">↑ <%= Math.round((analytics.thisMonth - analytics.lastMonth)/analytics.lastMonth*100) %>% MoM</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Last Month</div>
+        <div class="stat-card-value"><%= analytics.lastMonth.toLocaleString() %> EGP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Avg Order Value</div>
+        <div class="stat-card-value"><%= Math.round(analytics.totalRevenue / analytics.totalOrders).toLocaleString() %> EGP</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:24px;margin-bottom:24px">
+      <!-- Revenue chart -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📈 Revenue — Last 7 Days</div>
+        <div class="card-body">
+          <% const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; %>
+          <% const maxR = Math.max(...analytics.revenueChart); %>
+          <div style="display:flex;align-items:flex-end;gap:10px;height:140px;margin-bottom:12px">
+            <% analytics.revenueChart.forEach((v, i) => { %>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="font-size:10px;color:var(--text-muted)"><%= v.toLocaleString() %></div>
+                <div style="width:100%;background:linear-gradient(to top,var(--green),var(--cyan));border-radius:6px 6px 0 0;height:<%= Math.round((v/maxR)*100) %>px;min-height:4px;transition:height 0.6s ease"></div>
+                <div style="font-size:10px;color:var(--text-muted)"><%= days[i] %></div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders chart -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📦 Orders — Last 7 Days</div>
+        <div class="card-body">
+          <% const maxO = Math.max(...analytics.ordersChart); %>
+          <div style="display:flex;align-items:flex-end;gap:10px;height:140px;margin-bottom:12px">
+            <% analytics.ordersChart.forEach((v, i) => { %>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="font-size:10px;color:var(--text-muted)"><%= v %></div>
+                <div style="width:100%;background:linear-gradient(to top,var(--gold),var(--orange));border-radius:6px 6px 0 0;height:<%= Math.round((v/maxO)*100) %>px;min-height:4px"></div>
+                <div style="font-size:10px;color:var(--text-muted)"><%= days[i] %></div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:24px">
+      <!-- Top games -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">🎮 Top Games</div>
+        <div class="card-body">
+          <% analytics.topGames.forEach((game, i) => { %>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+              <div style="width:24px;height:24px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--green)">#<%= i+1 %></div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:13px;margin-bottom:4px"><%= game %></div>
+                <div class="progress">
+                  <div class="progress-bar" style="width:<%= 100 - i*22 %>%"></div>
+                </div>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted)"><%= 100 - i*22 %>%</div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Withdraw -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📤 Withdraw Earnings</div>
+        <div class="card-body">
+          <div style="text-align:center;padding:20px 0;margin-bottom:20px">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Available to Withdraw</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:900;color:var(--green)"><%= (user.balance || 4500).toLocaleString() %> EGP</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Withdrawal Method</label>
+            <select class="form-control">
+              <option>📱 Vodafone Cash</option>
+              <option>🏦 Bank Transfer</option>
+              <option>🏪 Fawry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" placeholder="Min 100 EGP">
+          </div>
+          <button class="btn btn-green btn-block">📤 Request Withdrawal</button>
+          <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px">Processed within 24 hours · Min: 100 EGP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

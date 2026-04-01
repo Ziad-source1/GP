@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-content">
+      <div class="auth-logo-big">LU</div>
+      <div class="auth-tagline">Egypt's #1<br><span>Gaming</span><br>Marketplace</div>
+      <p style="color:var(--text-dim);font-size:14px;margin-top:16px;max-width:280px">Trade game currency, accounts, gift cards & more — 100% secure with escrow.</p>
+      <div style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)">🔒 Escrow-protected every trade</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)">✅ 12,000+ verified traders</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)">🇪🇬 Egyptian payment methods</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="auth-title">Welcome Back 👾</div>
+      <div class="auth-sub">Sign in to your LEVEL UP account</div>
+
+      <!-- Demo quick logins -->
+      <div style="background:var(--black2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px">⚡ Quick Demo Login</div>
+        <div class="demo-logins">
+          <a href="/auth/demo/buyer" class="demo-btn">
+            <span class="demo-btn-icon">🎮</span>
+            <span class="demo-btn-label">Buyer Account</span>
+            <span class="demo-btn-desc">GameHunter</span>
+          </a>
+          <a href="/auth/demo/seller" class="demo-btn">
+            <span class="demo-btn-icon">⭐</span>
+            <span class="demo-btn-label">Seller Account</span>
+            <span class="demo-btn-desc">Ahmed_Pro</span>
+          </a>
+          <a href="/auth/demo/admin" class="demo-btn">
+            <span class="demo-btn-icon">🛡</span>
+            <span class="demo-btn-label">Admin Panel</span>
+            <span class="demo-btn-desc">admin</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="auth-divider">or login with email</div>
+
+      <form action="/auth/login" method="POST">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-group">
+            <span class="input-icon">✉️</span>
+            <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            Password
+            <a href="/auth/forgot" style="font-size:12px;color:var(--green)">Forgot password?</a>
+          </label>
+          <div class="input-group">
+            <span class="input-icon">🔑</span>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+          </div>
+        </div>
+        <div class="form-check" style="margin-bottom:20px">
+          <input type="checkbox" id="remember" name="remember">
+          <label class="form-check-label" for="remember">Remember me for 7 days</label>
+        </div>
+        <button type="submit" class="btn btn-green btn-block btn-lg">Sign In →</button>
+      </form>
+
+      <div class="auth-link">
+        Don't have an account? <a href="/auth/register">Create one free</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

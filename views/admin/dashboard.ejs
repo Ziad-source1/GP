@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div>
+          <div class="dashboard-title" style="color:var(--purple)">🛡 Admin Control Panel</div>
+          <div class="dashboard-sub">Platform overview and management</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <a href="/admin/verification" class="btn btn-ghost" style="border-color:var(--orange);color:var(--orange)">⏳ 3 Pending Reviews</a>
+          <a href="/admin/disputes" class="btn btn-red btn-sm">⚖️ 1 Open Dispute</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:rgba(168,85,247,0.2)">
+        <div class="stat-card-icon">👥</div>
+        <div class="stat-card-label">Total Users</div>
+        <div class="stat-card-value" style="color:var(--purple)"><%= stats.users.toLocaleString() %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">🏷️</div>
+        <div class="stat-card-label">Sellers</div>
+        <div class="stat-card-value text-green"><%= stats.sellers %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">📋</div>
+        <div class="stat-card-label">Active Listings</div>
+        <div class="stat-card-value"><%= stats.listings %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">📦</div>
+        <div class="stat-card-label">Total Orders</div>
+        <div class="stat-card-value"><%= stats.orders %></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">💰</div>
+        <div class="stat-card-label">Platform Revenue</div>
+        <div class="stat-card-value text-gold"><%= stats.revenue.toLocaleString() %> EGP</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,71,87,0.2)">
+        <div class="stat-card-icon">⚖️</div>
+        <div class="stat-card-label">Open Disputes</div>
+        <div class="stat-card-value" style="color:var(--red)"><%= stats.disputes %></div>
+      </div>
+    </div>
+
+    <!-- Quick action cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px">
+      <% const actions = [
+        {href:'/admin/verification',icon:'🪪',label:'Seller Verification',badge:stats.pendingVerifications,color:'var(--orange)'},
+        {href:'/admin/disputes',icon:'⚖️',label:'Dispute Resolution',badge:stats.disputes,color:'var(--red)'},
+        {href:'/admin/fraud',icon:'🚨',label:'Fraud Alerts',badge:2,color:'var(--red)'},
+        {href:'/admin/escrow',icon:'🔒',label:'Escrow Monitor',badge:null,color:'var(--cyan)'},
+        {href:'/admin/featured',icon:'⭐',label:'Featured Listings',badge:null,color:'var(--gold)'},
+        {href:'/admin/commission',icon:'⚙️',label:'Commission Settings',badge:null,color:'var(--purple)'}
+      ]; %>
+      <% actions.forEach(a => { %>
+        <a href="<%= a.href %>" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;text-decoration:none;transition:all 0.2s;position:relative;display:block">
+          <% if (a.badge) { %>
+            <span style="position:absolute;top:12px;right:12px;background:<%= a.color %>;color:#fff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700"><%= a.badge %></span>
+          <% } %>
+          <div style="font-size:28px;margin-bottom:10px"><%= a.icon %></div>
+          <div style="font-weight:700;font-size:14px;color:var(--text)"><%= a.label %></div>
+        </a>
+      <% }) %>
+    </div>
+
+    <!-- Recent orders table -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-header" style="font-weight:700">📦 Recent Orders</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Order ID</th><th>Item</th><th>Amount</th><th>Status</th><th>Escrow</th><th>Date</th></tr></thead>
+          <tbody>
+            <% recentOrders.forEach(o => { %>
+              <tr>
+                <td class="font-mono text-green text-sm">#<%= o.id %></td>
+                <td><%= o.title %></td>
+                <td class="text-gold font-bold"><%= o.amount.toLocaleString() %> EGP</td>
+                <td><span class="status status-<%= o.status %>"><%= o.status.replace('_',' ') %></span></td>
+                <td><span class="status status-<%= o.escrowStatus %>"><%= o.escrowStatus %></span></td>
+                <td class="text-muted text-sm"><%= o.createdAt %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- User list -->
+    <div class="card">
+      <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-weight:700">👥 Users</span>
+        <a href="/admin/users" style="font-size:12px;color:var(--green)">Manage all →</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Verified</th><th>Joined</th></tr></thead>
+          <tbody>
+            <% users.forEach(u => { %>
+              <tr>
+                <td><div style="font-weight:600"><%= u.username %></div></td>
+                <td class="text-dim text-sm"><%= u.email %></td>
+                <td><span class="tag <%= u.role === 'admin' ? '' : u.role === 'seller' ? 'tag-green' : '' %>"><%= u.role %></span></td>
+                <td><%= u.verified ? '<span class="text-green">✅ Yes</span>' : '<span class="text-muted">No</span>' %></td>
+                <td class="text-muted text-sm"><%= u.joinDate %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

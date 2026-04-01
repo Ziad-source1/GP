@@ -1,0 +1,249 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="padding-top:32px;padding-bottom:64px">
+  <div class="breadcrumb">
+    <a href="/">Home</a><span class="breadcrumb-sep">›</span>
+    <a href="/marketplace">Marketplace</a><span class="breadcrumb-sep">›</span>
+    <a href="/marketplace/category/<%= listing.category %>"><%= listing.category %></a><span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current truncate" style="max-width:300px"><%= listing.title %></span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start">
+    <!-- LEFT -->
+    <div>
+      <!-- Listing header -->
+      <div class="card card-green" style="margin-bottom:20px">
+        <div style="height:240px;background:linear-gradient(135deg,#0A1A2A,#0D1F30);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative">
+          🎮
+          <% if (listing.featured) { %>
+            <span class="listing-card-badge badge-featured" style="top:16px;left:16px;font-size:12px;padding:4px 12px">⭐ Featured</span>
+          <% } %>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <div>
+              <div class="listing-game" style="margin-bottom:8px">🎮 <%= listing.game %></div>
+              <h1 style="font-size:24px;font-weight:800;margin-bottom:12px"><%= listing.title %></h1>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <% listing.tags.forEach(tag => { %><span class="tag tag-green">#<%= tag %></span><% }) %>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:900;color:var(--gold)"><%= listing.price.toLocaleString() %> EGP</div>
+              <div style="font-size:12px;color:var(--text-muted)">per unit</div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px;padding:16px;background:var(--black2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-weight:700;margin-bottom:8px;font-size:14px">📝 Description</div>
+            <p style="color:var(--text-dim);font-size:14px;line-height:1.7"><%= listing.description %></p>
+          </div>
+
+          <!-- Details grid -->
+          <div class="grid-2" style="gap:12px;margin-top:16px">
+            <div style="padding:14px;background:var(--black2);border-radius:8px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Delivery Time</div>
+              <div style="font-weight:700;color:var(--green);margin-top:4px">⚡ <%= listing.deliveryTime %></div>
+            </div>
+            <div style="padding:14px;background:var(--black2);border-radius:8px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">In Stock</div>
+              <div style="font-weight:700;color:var(--text);margin-top:4px">📦 <%= listing.stock %> units</div>
+            </div>
+            <div style="padding:14px;background:var(--black2);border-radius:8px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Total Sold</div>
+              <div style="font-weight:700;color:var(--text);margin-top:4px">🛒 <%= listing.sales %> orders</div>
+            </div>
+            <div style="padding:14px;background:var(--black2);border-radius:8px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Escrow</div>
+              <div style="font-weight:700;color:var(--green);margin-top:4px">🔒 100% Protected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seller info -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header" style="font-weight:700;font-size:15px">👤 About the Seller</div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div class="profile-avatar" style="width:56px;height:56px;font-size:20px"><%= seller.username.charAt(0) %></div>
+            <div>
+              <div style="font-weight:800;font-size:18px"><%= seller.username %></div>
+              <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+                <% if (seller.badge === 'premium') { %><span class="nav-badge badge-premium">⭐ Premium</span><% } %>
+                <% if (seller.verified) { %><span class="nav-badge badge-verified">✓ Verified</span><% } %>
+              </div>
+            </div>
+            <div style="margin-left:auto;text-align:center">
+              <div class="stars">★★★★★</div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold)"><%= seller.rating %></div>
+              <div style="font-size:11px;color:var(--text-muted)">from <%= reviews.length %> reviews</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="text-align:center">
+              <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)"><%= seller.totalSales %>+</div>
+              <div style="font-size:11px;color:var(--text-muted)">Total Sales</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">98.7%</div>
+              <div style="font-size:11px;color:var(--text-muted)">Completion Rate</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">4 min</div>
+              <div style="font-size:11px;color:var(--text-muted)">Avg Response</div>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <a href="/marketplace/seller/<%= seller.id %>" class="btn btn-ghost btn-sm">View Full Profile →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="card">
+        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-weight:700;font-size:15px">⭐ Reviews (<%= reviews.length %>)</span>
+          <div class="stars">★★★★★ <span class="rating-num"><%= listing.sellerRating %></span></div>
+        </div>
+        <div class="card-body">
+          <% if (reviews.length > 0) { %>
+            <% reviews.forEach(review => { %>
+              <div class="review-card">
+                <div class="review-header">
+                  <div class="review-avatar">B</div>
+                  <div>
+                    <div class="review-name">Verified Buyer</div>
+                    <div class="stars" style="font-size:12px"><%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %></div>
+                  </div>
+                  <div class="review-date"><%= review.createdAt %></div>
+                </div>
+                <div class="review-text"><%= review.comment %></div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="empty-state" style="padding:32px">
+              <div style="font-size:32px;margin-bottom:8px">⭐</div>
+              <div style="color:var(--text-muted)">No reviews yet. Be the first buyer!</div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — BUY BOX -->
+    <div style="position:sticky;top:84px">
+      <div class="card card-green" style="margin-bottom:16px">
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Price</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:40px;font-weight:900;color:var(--gold)"><%= listing.price.toLocaleString() %> <span style="font-size:16px;font-weight:500;color:var(--text-muted)">EGP</span></div>
+
+          <div style="margin:16px 0">
+            <label class="form-label">Quantity (<%= listing.minOrder %>–<%= listing.maxOrder %>)</label>
+            <div class="qty-wrap" style="display:flex;align-items:center;gap:10px">
+              <button class="qty-btn qty-minus btn btn-ghost btn-sm" type="button">−</button>
+              <input type="number" id="qty-input" value="1" min="<%= listing.minOrder %>" max="<%= listing.maxOrder %>" class="form-control" style="text-align:center;width:80px">
+              <button class="qty-btn qty-plus btn btn-ghost btn-sm" type="button">+</button>
+            </div>
+            <input type="hidden" id="base-price" value="<%= listing.price %>">
+          </div>
+
+          <div style="padding:12px;background:var(--black2);border-radius:8px;border:1px solid var(--border);margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim)">
+              <span>Subtotal</span>
+              <span id="total-price"><%= listing.price.toLocaleString() %> EGP</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:6px">
+              <span>Platform Fee</span>
+              <span>FREE for buyer</span>
+            </div>
+            <div class="divider" style="margin:10px 0"></div>
+            <div style="display:flex;justify-content:space-between;font-weight:700;font-size:15px">
+              <span>Total</span>
+              <span style="color:var(--gold)" id="final-price"><%= listing.price.toLocaleString() %> EGP</span>
+            </div>
+          </div>
+
+          <% if (user) { %>
+            <a href="/buyer/checkout/<%= listing.id %>" class="btn btn-green btn-block btn-lg">🔒 Buy Now — Escrow Protected</a>
+          <% } else { %>
+            <a href="/auth/login" class="btn btn-green btn-block btn-lg">Login to Buy</a>
+          <% } %>
+
+          <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted)">
+            🔒 Funds held in escrow until you confirm delivery
+          </div>
+        </div>
+      </div>
+
+      <!-- Escrow badge -->
+      <div style="background:var(--green-glow);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-weight:700;font-size:14px;color:var(--green);margin-bottom:8px">🔒 Escrow Protected Trade</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-dim)">
+          <li>✅ Pay → funds locked safely</li>
+          <li>✅ Seller delivers your item</li>
+          <li>✅ You confirm → seller gets paid</li>
+          <li>✅ Problem? Open a dispute for full support</li>
+        </ul>
+        <a href="/pages/how-escrow" style="font-size:12px;color:var(--green);display:block;margin-top:10px">Learn more →</a>
+      </div>
+
+      <!-- Chat with seller -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700;font-size:14px">💬 Chat with Seller</div>
+        <div class="card-body">
+          <div class="chat-messages" style="height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:0;margin-bottom:10px">
+            <div class="chat-msg recv">
+              <div class="chat-bubble">Hi! Ready to deliver fast. Any questions?</div>
+              <div class="chat-time"><%= listing.sellerName %> • Online</div>
+            </div>
+          </div>
+          <div class="chat-input" style="padding:0;display:flex;gap:8px">
+            <input type="text" placeholder="Ask the seller..." style="flex:1;background:var(--black2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none">
+            <button class="btn btn-green btn-sm">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- More from seller -->
+  <% if (sellerListings.length > 0) { %>
+    <div style="margin-top:48px">
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:24px">More from <%= seller.username %></h3>
+      <div class="grid-auto">
+        <% sellerListings.forEach(sl => { %>
+          <div class="listing-card">
+            <div class="listing-card-img">🎮</div>
+            <div class="listing-card-body">
+              <div class="listing-game"><%= sl.game %></div>
+              <div class="listing-title"><%= sl.title %></div>
+            </div>
+            <div class="listing-footer">
+              <div class="listing-price"><%= sl.price.toLocaleString() %> <span>EGP</span></div>
+              <a href="/marketplace/listing/<%= sl.id %>" class="btn btn-outline btn-sm">View</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<script>
+// Sync total price
+const qtyInput = document.getElementById('qty-input');
+const totalPrice = document.getElementById('total-price');
+const finalPrice = document.getElementById('final-price');
+const base = parseInt(document.getElementById('base-price').value);
+if (qtyInput) {
+  qtyInput.addEventListener('input', () => {
+    const qty = parseInt(qtyInput.value) || 1;
+    const total = (qty * base).toLocaleString();
+    if (totalPrice) totalPrice.textContent = total + ' EGP';
+    if (finalPrice) finalPrice.textContent = total + ' EGP';
+  });
+}
+</script>
+
+<%- include('../partials/footer') %>

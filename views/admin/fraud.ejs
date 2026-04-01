@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">🚨 Fraud Detection</div>
+      <div class="dashboard-sub">Automated flags and suspicious activity alerts</div>
+    </div>
+    <div class="alert alert-error">⚠️ <strong><%= flags.filter(f=>f.severity==='high').length %> high-severity flags</strong> require immediate attention.</div>
+    <% flags.forEach(f => { %>
+      <div class="card" style="margin-bottom:12px;border-color:<%= f.severity === 'high' ? 'rgba(255,71,87,0.3)' : 'rgba(245,158,11,0.3)' %>">
+        <div class="card-body">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="font-size:24px"><%= f.severity === 'high' ? '🚨' : '⚠️' %></div>
+              <div>
+                <div style="font-weight:700;font-size:15px">@<%= f.user %></div>
+                <div style="font-size:13px;color:var(--text-dim);margin-top:2px"><%= f.reason %></div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">⏰ <%= f.time %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="tag" style="<%= f.severity === 'high' ? 'background:rgba(255,71,87,0.15);color:var(--red);border-color:rgba(255,71,87,0.3)' : 'background:rgba(245,158,11,0.1);color:var(--orange);border-color:rgba(245,158,11,0.3)' %>"><%= f.severity.toUpperCase() %></span>
+              <button class="btn btn-red btn-sm">🚫 Ban User</button>
+              <button class="btn btn-ghost btn-sm">👁 Investigate</button>
+              <button class="btn btn-ghost btn-sm">✅ Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+<%- include('../partials/footer') %>

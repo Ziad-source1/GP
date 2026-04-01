@@ -1,0 +1,77 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">About LEVEL UP 🎮</h1>
+    <p class="page-subtitle">Egypt's #1 gaming marketplace — built by gamers, for gamers</p>
+  </div>
+</div>
+
+<div class="container" style="padding:64px 24px">
+
+  <!-- Mission -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-bottom:72px">
+    <div>
+      <div class="section-eyebrow">Our Mission</div>
+      <h2 style="font-size:36px;font-weight:900;margin-bottom:16px">Making Gaming Trades <span class="text-green">Safe & Simple</span> in Egypt</h2>
+      <p style="color:var(--text-dim);font-size:15px;line-height:1.8;margin-bottom:16px">
+        LEVEL UP was founded in 2022 by a group of passionate Egyptian gamers who were tired of getting scammed on unprotected gaming trade groups and forums.
+      </p>
+      <p style="color:var(--text-dim);font-size:15px;line-height:1.8">
+        We built a secure, escrow-protected marketplace where every Egyptian gamer can buy and sell with full confidence — knowing their money is always protected until delivery is confirmed.
+      </p>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px;text-align:center">
+      <div class="nav-logo-icon" style="width:80px;height:80px;font-size:28px;margin:0 auto 20px">LU</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:900;margin-bottom:8px">LEVEL UP</div>
+      <div style="color:var(--text-dim);font-size:14px">Egypt's Gaming Marketplace</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-top:16px">
+        <span class="nav-badge badge-verified">🔒 Escrow Protected</span>
+        <span class="nav-badge badge-premium">🇪🇬 Egypt First</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar" style="margin-bottom:72px">
+    <div class="stat-item"><div class="stat-num" data-count="12000">0</div><div class="stat-label">Registered Traders</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="48000">0</div><div class="stat-label">Trades Completed</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="3400">0</div><div class="stat-label">Verified Sellers</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="99" data-suffix="%">0%</div><div class="stat-label">Escrow Success Rate</div></div>
+  </div>
+
+  <!-- Values -->
+  <div style="text-align:center;margin-bottom:40px">
+    <div class="section-eyebrow">Our Values</div>
+    <h2 style="font-size:32px;font-weight:900">What We Stand For</h2>
+  </div>
+  <div class="grid-3" style="gap:24px;margin-bottom:72px">
+    <% const values = [
+      {icon:'🔒',title:'Security First',body:'Every transaction is escrow-protected. We never release funds until buyers confirm receipt.'},
+      {icon:'✅',title:'Verified Trust',body:'Every seller undergoes ID verification. Fake accounts and scammers are immediately banned.'},
+      {icon:'🇪🇬',title:'Built for Egypt',body:'Egyptian payment methods, Arabic support, local currency — everything designed for Egyptian gamers.'},
+      {icon:'⚡',title:'Speed',body:'Most trades complete in under 15 minutes. We optimize for the fastest safe trading experience.'},
+      {icon:'🤝',title:'Fair Platform',body:'Transparent commission rates, no hidden fees. What you see is what you pay.'},
+      {icon:'🎧',title:'Real Support',body:'Real humans review disputes. Our team is available 7 days a week to resolve issues.'}
+    ]; %>
+    <% values.forEach(v => { %>
+      <div class="card card-green" style="padding:28px;text-align:center">
+        <div style="font-size:36px;margin-bottom:14px"><%= v.icon %></div>
+        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px"><%= v.title %></h3>
+        <p style="font-size:13px;color:var(--text-dim);line-height:1.7"><%= v.body %></p>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- CTA -->
+  <div style="text-align:center;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:56px 40px">
+    <h2 style="font-size:32px;font-weight:900;margin-bottom:12px">Ready to Level Up? 🚀</h2>
+    <p style="color:var(--text-dim);margin-bottom:28px">Join 12,000+ Egyptian gamers already trading safely on LEVEL UP</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="/auth/register" class="btn btn-green btn-lg">Create Free Account</a>
+      <a href="/marketplace" class="btn btn-outline btn-lg">Browse Marketplace</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

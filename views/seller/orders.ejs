@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/seller-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">📦 Order Management</div>
+      <div class="dashboard-sub">Track and fulfill your buyer orders</div>
+    </div>
+
+    <!-- Tab nav -->
+    <div class="tab-nav" style="display:flex;gap:4px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px">
+      <button class="tab-btn btn btn-sm active" data-tab="all" style="flex:1">All (<%= orders.length %>)</button>
+      <button class="tab-btn btn btn-sm" data-tab="pending" style="flex:1">Pending</button>
+      <button class="tab-btn btn btn-sm" data-tab="active" style="flex:1">In Progress</button>
+      <button class="tab-btn btn btn-sm" data-tab="done" style="flex:1">Completed</button>
+    </div>
+
+    <div class="tab-pane" data-pane="all">
+      <% if (orders.length > 0) { %>
+        <% orders.forEach(o => { %>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-body">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <div>
+                  <div class="font-mono text-green" style="font-size:11px;margin-bottom:4px">#<%= o.id %></div>
+                  <div style="font-weight:700;font-size:16px;margin-bottom:8px"><%= o.title %></div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <span class="status status-<%= o.status %>"><%= o.status.replace('_',' ') %></span>
+                    <span class="status status-<%= o.escrowStatus %>">🔒 <%= o.escrowStatus %></span>
+                    <% if (o.dispute) { %><span class="status status-disputed">⚖️ Dispute Open</span><% } %>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:800;color:var(--gold)"><%= o.amount.toLocaleString() %> EGP</div>
+                  <div style="font-size:12px;color:var(--text-muted)"><%= o.createdAt %></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+                <% if (!o.sellerDelivered && o.status === 'in_progress') { %>
+                  <button class="btn btn-green btn-sm">📦 Mark as Delivered</button>
+                <% } %>
+                <button class="btn btn-ghost btn-sm">💬 Chat with Buyer</button>
+                <% if (o.dispute) { %>
+                  <button class="btn btn-red btn-sm">⚖️ View Dispute</button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">📦</div>
+          <div class="empty-state-title">No orders yet</div>
+          <p>Orders will appear here once buyers purchase your listings.</p>
+        </div>
+      <% } %>
+    </div>
+    <div class="tab-pane hidden" data-pane="pending"><div class="empty-state"><div class="empty-state-icon">⏳</div><div class="empty-state-title">No pending orders</div></div></div>
+    <div class="tab-pane hidden" data-pane="active"><div class="empty-state"><div class="empty-state-icon">🔄</div><div class="empty-state-title">No active orders</div></div></div>
+    <div class="tab-pane hidden" data-pane="done"><div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No completed orders yet</div></div></div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

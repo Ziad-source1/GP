@@ -1,0 +1,72 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">🛒 Marketplace</h1>
+    <p class="page-subtitle">Browse thousands of verified gaming products</p>
+  </div>
+</div>
+
+<div class="container" style="padding-top:32px;padding-bottom:64px">
+  <!-- Filters -->
+  <form class="filters-bar" method="GET" action="/marketplace">
+    <input type="text" name="search" class="form-control" style="max-width:240px" placeholder="🔍 Search..." value="<%= query.search || '' %>">
+    <select name="sort" class="filter-select" onchange="this.form.submit()">
+      <option value="">Sort by</option>
+      <option value="popular" <%= query.sort === 'popular' ? 'selected' : '' %>>Most Popular</option>
+      <option value="price_asc" <%= query.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+      <option value="price_desc" <%= query.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+    </select>
+    <input type="number" name="min" class="filter-select" placeholder="Min EGP" value="<%= query.min || '' %>" style="width:100px">
+    <input type="number" name="max" class="filter-select" placeholder="Max EGP" value="<%= query.max || '' %>" style="width:100px">
+    <button type="submit" class="btn btn-green btn-sm">Filter</button>
+    <a href="/marketplace" class="btn btn-ghost btn-sm">Clear</a>
+
+    <!-- Category filters -->
+    <% categories.forEach(cat => { %>
+      <a href="/marketplace/category/<%= cat.id %>" class="filter-tag"><%= cat.icon %> <%= cat.name %></a>
+    <% }) %>
+
+    <span class="results-count"><%= listings.length %> results</span>
+  </form>
+
+  <% if (listings.length > 0) { %>
+    <div class="grid-auto">
+      <% listings.forEach((listing, i) => { %>
+        <div class="listing-card animate-fade-up" style="animation-delay:<%= i * 0.05 %>s">
+          <div class="listing-card-img">
+            <%= categories.find(c => c.id === listing.category)?.icon || '🎮' %>
+            <% if (listing.featured) { %><span class="listing-card-badge badge-featured">⭐ Featured</span><% } %>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-game"><%= listing.game %></div>
+            <div class="listing-title"><%= listing.title %></div>
+            <div class="listing-seller">
+              <div class="listing-seller-dot"><%= listing.sellerName.charAt(0) %></div>
+              <span><%= listing.sellerName %></span>
+              <% if (listing.sellerBadge === 'premium') { %><span class="tag tag-green" style="font-size:10px">PRO</span><% } %>
+              <span style="color:var(--gold);font-size:12px">★ <%= listing.sellerRating %></span>
+            </div>
+            <div class="listing-meta">
+              <span class="listing-meta-item">⚡ <%= listing.deliveryTime %></span>
+              <span class="listing-meta-item">🛒 <%= listing.sales %> sold</span>
+            </div>
+          </div>
+          <div class="listing-footer">
+            <div class="listing-price"><%= listing.price.toLocaleString() %> <span>EGP</span></div>
+            <a href="/marketplace/listing/<%= listing.id %>" class="btn btn-green btn-sm">Buy Now</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <div class="empty-state-icon">🔍</div>
+      <div class="empty-state-title">No listings found</div>
+      <p>Try adjusting your filters or search terms</p>
+      <a href="/marketplace" class="btn btn-green" style="margin-top:16px">Clear Filters</a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

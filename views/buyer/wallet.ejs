@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/buyer-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">💰 My Wallet</div>
+      <div class="dashboard-sub">Manage your LEVEL UP balance</div>
+    </div>
+
+    <!-- Wallet Balance Card -->
+    <div class="wallet-card" style="margin-bottom:24px">
+      <div class="wallet-balance-label">Available Balance</div>
+      <div class="wallet-balance"><%= (user.balance || 0).toLocaleString() %> <span>EGP</span></div>
+      <div style="display:flex;gap:12px;margin-top:24px">
+        <button class="btn btn-green" onclick="document.getElementById('deposit-modal').style.display='flex'">➕ Add Funds</button>
+        <button class="btn btn-outline">📤 Withdraw</button>
+      </div>
+    </div>
+
+    <!-- Deposit Methods -->
+    <div class="grid-3" style="margin-bottom:28px">
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">📱</div>
+        <div style="font-weight:700;margin-bottom:4px">Vodafone Cash</div>
+        <div style="font-size:12px;color:var(--text-muted)">Instant · No fees</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">🏪</div>
+        <div style="font-weight:700;margin-bottom:4px">Fawry</div>
+        <div style="font-size:12px;color:var(--text-muted)">All locations · Fast</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">💳</div>
+        <div style="font-weight:700;margin-bottom:4px">Bank Card</div>
+        <div style="font-size:12px;color:var(--text-muted)">Visa/Mastercard</div>
+      </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="card">
+      <div class="card-header" style="font-weight:700">📋 Transaction History</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Description</th><th>Method</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+            <% transactions.forEach(t => { %>
+              <tr>
+                <td>
+                  <span style="font-size:16px"><%= t.type === 'deposit' ? '⬇️' : '⬆️' %></span>
+                </td>
+                <td><%= t.note %></td>
+                <td><span class="tag"><%= t.method %></span></td>
+                <td class="font-bold <%= t.amount > 0 ? 'text-green' : 'text-red' %>">
+                  <%= t.amount > 0 ? '+' : '' %><%= t.amount.toLocaleString() %> EGP
+                </td>
+                <td><span class="status status-<%= t.status %>"><%= t.status %></span></td>
+                <td class="text-muted text-sm"><%= t.createdAt %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Deposit Modal -->
+<div id="deposit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:36px;width:100%;max-width:400px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:24px">
+      <h3 style="font-size:22px;font-weight:800">➕ Add Funds</h3>
+      <button onclick="document.getElementById('deposit-modal').style.display='none'" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount (EGP)</label>
+      <input type="number" class="form-control" placeholder="e.g. 500" min="50">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Payment Method</label>
+      <select class="form-control">
+        <option>📱 Vodafone Cash</option>
+        <option>🏪 Fawry</option>
+        <option>💳 Bank Card</option>
+      </select>
+    </div>
+    <button class="btn btn-green btn-block">Confirm Deposit</button>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,126 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="padding-top:32px;padding-bottom:64px">
+  <div class="breadcrumb">
+    <a href="/">Home</a><span class="breadcrumb-sep">›</span>
+    <a href="/marketplace">Marketplace</a><span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">@<%= seller.username %></span>
+  </div>
+
+  <!-- Profile Hero -->
+  <div class="profile-hero">
+    <div class="profile-avatar"><%= seller.username.charAt(0) %></div>
+    <div style="flex:1">
+      <div class="profile-name">@<%= seller.username %></div>
+      <div class="profile-badges">
+        <% if (seller.badge === 'premium') { %><span class="nav-badge badge-premium">⭐ Premium Seller</span><% } %>
+        <% if (seller.verified) { %><span class="nav-badge badge-verified">✓ ID Verified</span><% } %>
+        <span style="font-size:12px;color:var(--text-muted)">Member since <%= seller.joinDate %></span>
+      </div>
+      <% if (seller.bio) { %>
+        <p style="font-size:14px;color:var(--text-dim);margin-top:10px;max-width:520px"><%= seller.bio %></p>
+      <% } %>
+      <div class="profile-stats">
+        <div>
+          <div class="profile-stat-num" style="color:var(--green)"><%= seller.totalSales %>+</div>
+          <div class="profile-stat-label">Completed Sales</div>
+        </div>
+        <div>
+          <div class="profile-stat-num" style="color:var(--gold)"><%= seller.rating %> ★</div>
+          <div class="profile-stat-label">Rating</div>
+        </div>
+        <div>
+          <div class="profile-stat-num">98.7%</div>
+          <div class="profile-stat-label">Completion</div>
+        </div>
+        <div>
+          <div class="profile-stat-num"><%= listings.length %></div>
+          <div class="profile-stat-label">Active Listings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start">
+    <div>
+      <!-- Listings -->
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:20px">Active Listings (<%= listings.length %>)</h3>
+      <% if (listings.length > 0) { %>
+        <div class="grid-auto">
+          <% listings.forEach(listing => { %>
+            <div class="listing-card">
+              <div class="listing-card-img">🎮</div>
+              <div class="listing-card-body">
+                <div class="listing-game"><%= listing.game %></div>
+                <div class="listing-title"><%= listing.title %></div>
+                <div class="listing-meta">
+                  <span>⚡ <%= listing.deliveryTime %></span>
+                  <span>🛒 <%= listing.sales %> sold</span>
+                </div>
+              </div>
+              <div class="listing-footer">
+                <div class="listing-price"><%= listing.price.toLocaleString() %> <span>EGP</span></div>
+                <a href="/marketplace/listing/<%= listing.id %>" class="btn btn-green btn-sm">Buy</a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state"><div class="empty-state-icon">📋</div><div>No active listings</div></div>
+      <% } %>
+
+      <!-- Reviews -->
+      <div style="margin-top:40px">
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:20px">Reviews (<%= reviews.length %>)</h3>
+        <% reviews.forEach(review => { %>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar">B</div>
+              <div>
+                <div class="review-name">Verified Buyer</div>
+                <div class="stars"><%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %></div>
+              </div>
+              <div class="review-date"><%= review.createdAt %></div>
+            </div>
+            <div class="review-text"><%= review.comment %></div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header" style="font-weight:700">💬 Contact Seller</div>
+        <div class="card-body">
+          <% if (user) { %>
+            <div class="chat-messages" style="height:120px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;margin-bottom:10px">
+              <div class="chat-msg recv">
+                <div class="chat-bubble">Hello! How can I help you today?</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <input type="text" placeholder="Type a message..." class="form-control" style="font-size:13px">
+              <button class="btn btn-green btn-sm">Send</button>
+            </div>
+          <% } else { %>
+            <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px">Login to contact this seller</p>
+            <a href="/auth/login" class="btn btn-green btn-block">Login to Chat</a>
+          <% } %>
+        </div>
+      </div>
+
+      <div style="background:var(--green-glow);border:1px solid rgba(0,255,136,0.2);border-radius:var(--radius);padding:16px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:12px">🛡 Seller Guarantees</div>
+        <ul style="list-style:none;font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:8px">
+          <li>✅ ID-verified seller</li>
+          <li>✅ All trades escrow-protected</li>
+          <li>✅ Fast response time</li>
+          <li>✅ Dispute resolution available</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

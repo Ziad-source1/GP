@@ -1,0 +1,119 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">🎧 Contact & Support</h1>
+    <p class="page-subtitle">We're here to help — reach out any time</p>
+  </div>
+</div>
+
+<div class="container" style="padding:64px 24px">
+  <div class="grid-2" style="gap:40px;align-items:start">
+    <!-- Form -->
+    <div class="card">
+      <div class="card-header" style="font-weight:700;font-size:17px">✉️ Send Us a Message</div>
+      <div class="card-body">
+        <form action="/pages/contact" method="POST">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" name="name" class="form-control" placeholder="Mohamed Ahmed" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select name="subject" class="form-control">
+              <option>General Inquiry</option>
+              <option>Order Issue</option>
+              <option>Dispute Help</option>
+              <option>Seller Verification</option>
+              <option>Payment Problem</option>
+              <option>Account Issue</option>
+              <option>Report a Scam</option>
+              <option>Partnership</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Order ID (if applicable)</label>
+            <input type="text" name="orderId" class="form-control" placeholder="e.g. ORD-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Message</label>
+            <textarea name="message" class="form-control" rows="5" placeholder="Describe your issue in detail..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Attachments (optional)</label>
+            <div class="file-upload" onclick="document.getElementById('contact-attach').click()">
+              <input type="file" id="contact-attach" multiple style="display:none">
+              <div class="file-upload-icon">📎</div>
+              <div class="file-upload-text">Add screenshots or files</div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-green btn-block btn-lg">📤 Send Message</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contact info -->
+    <div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header" style="font-weight:700">📞 Contact Methods</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:40px;height:40px;background:var(--green-glow);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✉️</div>
+              <div>
+                <div style="font-weight:700">Email Support</div>
+                <div style="color:var(--green);font-size:13px">support@levelup.gg</div>
+                <div style="font-size:12px;color:var(--text-muted)">Response within 24 hours</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:40px;height:40px;background:var(--green-glow);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">💬</div>
+              <div>
+                <div style="font-weight:700">Live Chat</div>
+                <div style="color:var(--green);font-size:13px">Available in your dashboard</div>
+                <div style="font-size:12px;color:var(--text-muted)">Fastest option — real-time</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:40px;height:40px;background:var(--green-glow);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📘</div>
+              <div>
+                <div style="font-weight:700">Facebook Page</div>
+                <div style="color:var(--green);font-size:13px">facebook.com/levelupgg</div>
+                <div style="font-size:12px;color:var(--text-muted)">Response within a few hours</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header" style="font-weight:700">⏱ Support Hours</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Saturday – Thursday</span><span style="font-weight:600">9:00 AM – 11:00 PM</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Friday</span><span style="font-weight:600">2:00 PM – 11:00 PM</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Dispute Resolution</span><span style="font-weight:600;color:var(--green)">24/7</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--green-glow);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:20px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:10px">💡 Quick Help</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <a href="/pages/faq" style="font-size:13px;color:var(--text-dim)">→ Browse our FAQ</a>
+          <a href="/pages/how-escrow" style="font-size:13px;color:var(--text-dim)">→ How Escrow Works</a>
+          <a href="/buyer/disputes" style="font-size:13px;color:var(--text-dim)">→ Open a Dispute</a>
+          <a href="/seller/verification" style="font-size:13px;color:var(--text-dim)">→ Seller Verification Guide</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,211 @@
+<%- include('partials/header') %>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container" style="position:relative;z-index:2;width:100%">
+    <div class="hero-content animate-fade-up">
+      <div class="hero-eyebrow">🇪🇬 Egypt's #1 Gaming Marketplace</div>
+      <h1>
+        Trade Games.<br>
+        <span class="highlight">Level Up</span> Your Game.<br>
+        <span class="gold">Win Every Day.</span>
+      </h1>
+      <p>Buy & sell game currency, accounts, gift cards and boosting services — 100% secure with escrow protection.</p>
+
+      <form class="hero-search" action="/marketplace" method="GET">
+        <input type="text" name="search" placeholder="Search: Free Fire diamonds, PUBG UC, Valorant points...">
+        <select name="category">
+          <option value="">All Categories</option>
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat.id %>"><%= cat.icon %> <%= cat.name %></option>
+          <% }) %>
+        </select>
+        <button type="submit">SEARCH</button>
+      </form>
+
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num" data-count="5240" data-suffix="+">5,240+</div>
+          <div class="hero-stat-label">Active Listings</div>
+        </div>
+        <div>
+          <div class="hero-stat-num" data-count="12000" data-suffix="+">12,000+</div>
+          <div class="hero-stat-label">Traders</div>
+        </div>
+        <div>
+          <div class="hero-stat-num" data-count="99" data-suffix="%">99%</div>
+          <div class="hero-stat-label">Escrow Protected</div>
+        </div>
+        <div>
+          <div class="hero-stat-num" data-count="48000" data-suffix="+">48,000+</div>
+          <div class="hero-stat-label">Trades Completed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-items">
+      <div class="trust-item">
+        <div class="trust-icon">🔒</div>
+        <div>
+          <div class="trust-label">Escrow Protected</div>
+          <div class="trust-sub">Funds locked until delivery confirmed</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">✅</div>
+        <div>
+          <div class="trust-label">Verified Sellers</div>
+          <div class="trust-sub">ID-verified traders only</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">⚡</div>
+        <div>
+          <div class="trust-label">Instant Delivery</div>
+          <div class="trust-sub">Most orders in under 5 minutes</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🇪🇬</div>
+        <div>
+          <div class="trust-label">Egypt Payments</div>
+          <div class="trust-sub">Vodafone Cash, Fawry & more</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🎧</div>
+        <div>
+          <div class="trust-label">24/7 Support</div>
+          <div class="trust-sub">Dispute resolution guaranteed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section" style="padding-bottom:40px">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Browse by Category</div>
+      <h2 class="section-title">What Are You Looking For?</h2>
+    </div>
+    <div class="category-grid">
+      <% categories.forEach(cat => { %>
+        <a href="/marketplace/category/<%= cat.id %>" class="category-card" data-cat="<%= cat.id %>">
+          <div class="category-icon"><%= cat.icon %></div>
+          <div class="category-name"><%= cat.name %></div>
+          <div class="category-count"><%= cat.count.toLocaleString() %> listings</div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED LISTINGS -->
+<section class="section" style="padding-top:40px">
+  <div class="container">
+    <div class="section-actions">
+      <div>
+        <div class="section-eyebrow">Hot Right Now</div>
+        <h2 class="section-title">Featured Listings</h2>
+      </div>
+      <a href="/marketplace" class="btn btn-outline">View All →</a>
+    </div>
+    <div class="grid-auto">
+      <% featured.forEach((listing, i) => { %>
+        <div class="listing-card animate-fade-up" style="animation-delay:<%= i * 0.08 %>s">
+          <div class="listing-card-img">
+            <span><%= categories.find(c => c.id === listing.category)?.icon || '🎮' %></span>
+            <% if (listing.featured) { %><span class="listing-card-badge badge-featured">⭐ Featured</span><% } %>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-game"><%= listing.game %></div>
+            <div class="listing-title"><%= listing.title %></div>
+            <div class="listing-seller">
+              <div class="listing-seller-dot">A</div>
+              <span><%= listing.sellerName %></span>
+              <% if (listing.sellerBadge === 'premium') { %><span class="tag tag-green" style="font-size:10px">⭐ PRO</span><% } %>
+              <span style="margin-left:4px;color:var(--gold)">★ <%= listing.sellerRating %></span>
+            </div>
+            <div class="listing-meta">
+              <span class="listing-meta-item">⚡ <%= listing.deliveryTime %></span>
+              <span class="listing-meta-item">🛒 <%= listing.sales %> sold</span>
+              <span class="listing-meta-item">📦 <%= listing.stock %> left</span>
+            </div>
+          </div>
+          <div class="listing-footer">
+            <div>
+              <div class="listing-price"><%= listing.price.toLocaleString() %> <span>EGP</span></div>
+            </div>
+            <a href="/marketplace/listing/<%= listing.id %>" class="btn btn-green btn-sm">Buy Now</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:var(--black2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="section-header" style="text-align:center">
+      <div class="section-eyebrow">Simple & Secure</div>
+      <h2 class="section-title">How LEVEL UP Works</h2>
+      <p class="section-subtitle" style="margin:0 auto">Trade with total confidence. Our escrow system protects every transaction.</p>
+    </div>
+    <div class="grid-4" style="margin-top:48px">
+      <div style="text-align:center;padding:24px">
+        <div style="width:64px;height:64px;background:var(--green-glow);border:2px solid rgba(0,255,136,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px">🔍</div>
+        <h3 style="font-size:18px;margin-bottom:8px">Browse Listings</h3>
+        <p style="font-size:13px;color:var(--text-dim)">Find exactly what you need from thousands of verified listings</p>
+      </div>
+      <div style="text-align:center;padding:24px">
+        <div style="width:64px;height:64px;background:var(--green-glow);border:2px solid rgba(0,255,136,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px">💳</div>
+        <h3 style="font-size:18px;margin-bottom:8px">Pay Securely</h3>
+        <p style="font-size:13px;color:var(--text-dim)">Your payment is locked in escrow — never released until you confirm delivery</p>
+      </div>
+      <div style="text-align:center;padding:24px">
+        <div style="width:64px;height:64px;background:var(--green-glow);border:2px solid rgba(0,255,136,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px">📦</div>
+        <h3 style="font-size:18px;margin-bottom:8px">Get Delivered</h3>
+        <p style="font-size:13px;color:var(--text-dim)">Seller delivers your item. Chat directly for fast coordination</p>
+      </div>
+      <div style="text-align:center;padding:24px">
+        <div style="width:64px;height:64px;background:var(--green-glow);border:2px solid rgba(0,255,136,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px">✅</div>
+        <h3 style="font-size:18px;margin-bottom:8px">Confirm & Win</h3>
+        <p style="font-size:13px;color:var(--text-dim)">Confirm receipt, funds released. Leave a review and level up!</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="/pages/how-escrow" class="btn btn-outline">Learn More About Escrow →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="section">
+  <div class="container">
+    <div style="background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--border2);border-radius:24px;padding:56px 48px;text-align:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,255,136,0.05),transparent)"></div>
+      <div style="position:relative;z-index:2">
+        <div class="section-eyebrow">Start Trading Today</div>
+        <h2 style="font-size:clamp(28px,4vw,48px);font-weight:900;margin-bottom:12px">Become a <span style="color:var(--green)">Verified Seller</span></h2>
+        <p style="color:var(--text-dim);font-size:16px;max-width:520px;margin:0 auto 32px">Join 3,400+ verified sellers making a living on LEVEL UP. Easy verification, fast payouts, full control.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <a href="/auth/register" class="btn btn-green btn-lg">Start Selling Now 🚀</a>
+          <a href="/pages/premium-seller" class="btn btn-gold btn-lg">View Premium Plans ⭐</a>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:20px">No monthly fee for basic sellers · Commission only on sales · ID verification required</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

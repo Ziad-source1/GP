@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">🔒 Escrow Monitor</div>
+      <div class="dashboard-sub">Monitor all active escrow transactions</div>
+    </div>
+    <div class="stat-cards" style="margin-bottom:24px">
+      <div class="stat-card"><div class="stat-card-label">Total Held</div><div class="stat-card-value text-cyan">1,310 EGP</div></div>
+      <div class="stat-card"><div class="stat-card-label">Active Holds</div><div class="stat-card-value text-orange">2</div></div>
+      <div class="stat-card"><div class="stat-card-label">Released Today</div><div class="stat-card-value text-green">450 EGP</div></div>
+      <div class="stat-card"><div class="stat-card-label">Disputed</div><div class="stat-card-value" style="color:var(--red)">1</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Order</th><th>Item</th><th>Amount</th><th>Escrow Status</th><th>Buyer Confirmed</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td class="font-mono text-green text-sm">#<%= o.id %></td>
+              <td><%= o.title %></td>
+              <td class="text-gold font-bold"><%= o.amount.toLocaleString() %> EGP</td>
+              <td><span class="status status-<%= o.escrowStatus %>"><%= o.escrowStatus %></span></td>
+              <td><%= o.buyerConfirmed ? '<span class="text-green">✅ Yes</span>' : '<span class="text-muted">No</span>' %></td>
+              <td class="text-muted text-sm"><%= o.createdAt %></td>
+              <td>
+                <% if (o.escrowStatus === 'held') { %>
+                  <button class="btn btn-green btn-sm">Force Release</button>
+                <% } else { %>
+                  <span class="text-muted text-sm">Released</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,136 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="padding-top:32px;padding-bottom:64px;max-width:900px">
+  <div class="breadcrumb">
+    <a href="/marketplace">Marketplace</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="/marketplace/listing/<%= listing.id %>"><%= listing.title %></a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">Checkout</span>
+  </div>
+
+  <h1 style="font-size:32px;font-weight:900;margin-bottom:8px">🔒 Secure Checkout</h1>
+  <p style="color:var(--text-dim);margin-bottom:32px">Your payment is protected by LEVEL UP escrow</p>
+
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start">
+    <!-- LEFT -->
+    <div>
+      <!-- Item Summary -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header" style="font-weight:700">🎮 Order Summary</div>
+        <div class="card-body">
+          <div style="display:flex;gap:16px;align-items:center">
+            <div style="width:64px;height:64px;background:var(--black2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px">🎮</div>
+            <div style="flex:1">
+              <div style="font-size:13px;color:var(--green);font-weight:700"><%= listing.game %></div>
+              <div style="font-weight:700;font-size:16px;margin-bottom:4px"><%= listing.title %></div>
+              <div style="font-size:12px;color:var(--text-muted)">Seller: <%= listing.sellerName %> · ⚡ <%= listing.deliveryTime %></div>
+            </div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:800;color:var(--gold)"><%= listing.price.toLocaleString() %> EGP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header" style="font-weight:700">💳 Payment Method</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <label style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--black2);border:2px solid var(--green);border-radius:10px;cursor:pointer">
+              <input type="radio" name="payment" value="wallet" checked style="accent-color:var(--green)">
+              <div>
+                <div style="font-weight:700">💰 LEVEL UP Wallet</div>
+                <div style="font-size:12px;color:var(--text-muted)">Balance: <%= (user.balance||0).toLocaleString() %> EGP · Instant</div>
+              </div>
+              <span class="tag tag-green" style="margin-left:auto">Recommended</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--black2);border:1px solid var(--border);border-radius:10px;cursor:pointer">
+              <input type="radio" name="payment" value="vodafone" style="accent-color:var(--green)">
+              <div>
+                <div style="font-weight:700">📱 Vodafone Cash</div>
+                <div style="font-size:12px;color:var(--text-muted)">Pay via Vodafone mobile wallet</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--black2);border:1px solid var(--border);border-radius:10px;cursor:pointer">
+              <input type="radio" name="payment" value="fawry" style="accent-color:var(--green)">
+              <div>
+                <div style="font-weight:700">🏪 Fawry</div>
+                <div style="font-size:12px;color:var(--text-muted)">Pay at any Fawry location</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--black2);border:1px solid var(--border);border-radius:10px;cursor:pointer">
+              <input type="radio" name="payment" value="card" style="accent-color:var(--green)">
+              <div>
+                <div style="font-weight:700">💳 Bank Card</div>
+                <div style="font-size:12px;color:var(--text-muted)">Visa / Mastercard</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Info -->
+      <div class="card">
+        <div class="card-header" style="font-weight:700">📦 Delivery Instructions</div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Your Game Username / ID (required for delivery)</label>
+            <input type="text" class="form-control" placeholder="Enter your in-game name or player ID">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Notes (optional)</label>
+            <textarea class="form-control" placeholder="Any special instructions for the seller..." rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div style="position:sticky;top:84px">
+      <div class="card card-green" style="margin-bottom:16px">
+        <div class="card-header" style="font-weight:700;color:var(--green)">🔒 Escrow Summary</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:var(--text-dim)">Item Price</span>
+              <span style="font-weight:600"><%= listing.price.toLocaleString() %> EGP</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:var(--text-dim)">Platform Fee</span>
+              <span style="color:var(--green)">FREE</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:var(--text-dim)">Escrow Protection</span>
+              <span style="color:var(--green)">✅ Included</span>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:space-between;font-weight:800;font-size:17px">
+              <span>Total</span>
+              <span style="color:var(--gold)"><%= listing.price.toLocaleString() %> EGP</span>
+            </div>
+          </div>
+          <form action="/buyer/order" method="POST">
+            <input type="hidden" name="listingId" value="<%= listing.id %>">
+            <input type="hidden" name="amount" value="<%= listing.price %>">
+            <button type="submit" class="btn btn-green btn-block btn-lg">🔒 Place Order — Funds to Escrow</button>
+          </form>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:12px">
+            By placing this order, you agree to our <a href="/pages/terms">Terms of Service</a>
+          </p>
+        </div>
+      </div>
+
+      <div style="background:var(--green-glow);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:16px">
+        <div style="font-weight:700;color:var(--green);font-size:14px;margin-bottom:10px">🛡 How Escrow Works</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text-dim)">
+          <div style="display:flex;gap:8px"><span>1️⃣</span><span>Your payment is locked securely in escrow</span></div>
+          <div style="display:flex;gap:8px"><span>2️⃣</span><span>Seller delivers your item within agreed time</span></div>
+          <div style="display:flex;gap:8px"><span>3️⃣</span><span>You confirm receipt — seller gets paid</span></div>
+          <div style="display:flex;gap:8px"><span>4️⃣</span><span>Problem? Open a dispute for full protection</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
