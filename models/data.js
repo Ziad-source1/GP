@@ -2,7 +2,7 @@
 // LEVEL UP — Database Query Layer  (replaces mock data)
 // All async functions — use await in controllers
 // ============================================================
-const db = require('../db');
+const db = require('./db');
 
 // ── Static data (no DB table needed) ────────────────────────
 const categories = [
@@ -516,24 +516,190 @@ async function getRecentOrders(limit=10) {
 // ────────────────────────────────────────────────────────────
 // EXPORTS
 // ────────────────────────────────────────────────────────────
-module.exports = {
-  categories, premiumPlans, faqs,
-  getAllUsers, getUserById, getUserByEmail, getUserByUsername,
-  createUser, updateUser, updateUserBalance,
-  getSellerByUserId, getSellerById, getTopSellers, createSeller,
-  updateSellerVerification, getPendingVerifications,
-  approveVerification, rejectVerification,
-  getAllListings, getFeaturedListings, getListingById,
-  getListingsBySeller, getListingsBySellerUserId,
-  createListing, getCategoriesWithCounts, toggleFeatured, normaliseProduct,
-  getOrdersByBuyer, getOrdersBySeller, getOrderById,
-  createOrder, confirmDelivery, markDelivered,
-  getAllEscrow,
-  getWalletByUser, addDeposit,
-  getReviewsBySeller, createReview,
-  getNotificationsByUser, createNotification, markNotificationsRead,
-  getDisputesByBuyer, getAllDisputes, createDispute, resolveDispute,
-  getSellerAnalytics,
-  getAffiliateByUser, createAffiliate,
-  getAdminStats, getRecentOrders
+// module.exports = {
+//   categories, premiumPlans, faqs,
+//   getAllUsers, getUserById, getUserByEmail, getUserByUsername,
+//   createUser, updateUser, updateUserBalance,
+//   getSellerByUserId, getSellerById, getTopSellers, createSeller,
+//   updateSellerVerification, getPendingVerifications,
+//   approveVerification, rejectVerification,
+//   getAllListings, getFeaturedListings, getListingById,
+//   getListingsBySeller, getListingsBySellerUserId,
+//   createListing, getCategoriesWithCounts, toggleFeatured, normaliseProduct,
+//   getOrdersByBuyer, getOrdersBySeller, getOrderById,
+//   createOrder, confirmDelivery, markDelivered,
+//   getAllEscrow,
+//   getWalletByUser, addDeposit,
+//   getReviewsBySeller, createReview,
+//   getNotificationsByUser, createNotification, markNotificationsRead,
+//   getDisputesByBuyer, getAllDisputes, createDispute, resolveDispute,
+//   getSellerAnalytics,
+//   getAffiliateByUser, createAffiliate,
+//   getAdminStats, getRecentOrders
+// };
+
+// ============================================================
+// LEVEL UP — Mock Data Store
+// ============================================================
+
+const users = [
+  {
+    id: 1, username: 'Ahmed_Pro', email: 'ahmed@example.com',
+    password: '$2a$10$xyz', role: 'seller', verified: true,
+    avatar: null, joinDate: '2023-01-15', balance: 4500,
+    rating: 4.9, totalSales: 312, badge: 'premium',
+    bio: 'Professional game currency seller. Fast delivery guaranteed.'
+  },
+  {
+    id: 2, username: 'GameHunter', email: 'hunter@example.com',
+    password: '$2a$10$xyz', role: 'buyer', verified: false,
+    avatar: null, joinDate: '2023-06-20', balance: 1200,
+    rating: 4.5, totalSales: 0, badge: null, bio: ''
+  },
+  {
+    id: 3, username: 'admin', email: 'admin@levelup.gg',
+    password: '$2a$10$xyz', role: 'admin', verified: true,
+    avatar: null, joinDate: '2022-01-01', balance: 0,
+    rating: 5.0, totalSales: 0, badge: 'admin', bio: 'Platform Administrator'
+  }
+];
+
+
+
+const listings = [
+  {
+    id: 1, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'currency', game: 'Free Fire', title: '10,000 Free Fire Diamonds',
+    description: 'Instant delivery. Safe & secure. Tested daily. Best price in Egypt.',
+    price: 450, currency: 'EGP', image: null,
+    tags: ['instant', 'safe', 'cheapest'], views: 1240, sales: 89,
+    stock: 50, status: 'active', featured: true, createdAt: '2024-01-10',
+    deliveryTime: '5 min', minOrder: 1, maxOrder: 10
+  },
+  {
+    id: 2, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'currency', game: 'PUBG Mobile', title: '600 UC PUBG Mobile',
+    description: 'Fast delivery within minutes. Guaranteed safe.',
+    price: 180, currency: 'EGP', image: null,
+    tags: ['fast', 'safe'], views: 890, sales: 134,
+    stock: 100, status: 'active', featured: true, createdAt: '2024-01-12',
+    deliveryTime: '10 min', minOrder: 1, maxOrder: 20
+  },
+  {
+    id: 3, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'accounts', game: 'Valorant', title: 'Valorant Gold Account - 30 Skins',
+    description: 'Ready to play Gold ranked account with rare skins. Full access guaranteed.',
+    price: 1200, currency: 'EGP', image: null,
+    tags: ['rare', 'ranked', 'skins'], views: 456, sales: 12,
+    stock: 3, status: 'active', featured: false, createdAt: '2024-01-20',
+    deliveryTime: '30 min', minOrder: 1, maxOrder: 1
+  },
+  {
+    id: 4, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'giftcards', game: 'PlayStation', title: 'PlayStation Store $20 Gift Card',
+    description: 'Original PlayStation gift card. Works worldwide. Instant code delivery.',
+    price: 680, currency: 'EGP', image: null,
+    tags: ['instant', 'original'], views: 780, sales: 45,
+    stock: 25, status: 'active', featured: true, createdAt: '2024-01-05',
+    deliveryTime: 'Instant', minOrder: 1, maxOrder: 5
+  },
+  {
+    id: 5, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'boosting', game: 'League of Legends', title: 'LOL Diamond Boosting',
+    description: 'Professional boosting by Diamond+ players. VPN used for safety. Offline mode.',
+    price: 2500, currency: 'EGP', image: null,
+    tags: ['professional', 'safe', 'fast'], views: 320, sales: 8,
+    stock: 10, status: 'active', featured: false, createdAt: '2024-01-18',
+    deliveryTime: '1-3 days', minOrder: 1, maxOrder: 1
+  },
+  {
+    id: 6, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'items', game: 'CS2', title: 'AK-47 Redline FT + M4 Desolate Space',
+    description: 'Both skins bundled. Field-Tested condition. Trade via Steam.',
+    price: 950, currency: 'EGP', image: null,
+    tags: ['bundle', 'ft'], views: 590, sales: 6,
+    stock: 1, status: 'active', featured: false, createdAt: '2024-01-22',
+    deliveryTime: '1 hour', minOrder: 1, maxOrder: 1
+  },
+  {
+    id: 7, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'topups', game: 'Clash of Clans', title: 'Clash of Clans 14,000 Gems',
+    description: 'Direct account top-up. Share your player tag. Safe guaranteed.',
+    price: 320, currency: 'EGP', image: null,
+    tags: ['direct', 'safe'], views: 670, sales: 56,
+    stock: 30, status: 'active', featured: true, createdAt: '2024-01-08',
+    deliveryTime: '15 min', minOrder: 1, maxOrder: 5
+  },
+  {
+    id: 8, sellerId: 1, sellerName: 'Ahmed_Pro', sellerRating: 4.9, sellerBadge: 'premium',
+    category: 'giftcards', game: 'Steam', title: 'Steam Wallet $50 Gift Card',
+    description: 'Instant delivery. Works on Egyptian accounts. No region lock.',
+    price: 1650, currency: 'EGP', image: null,
+    tags: ['instant', 'no-region-lock'], views: 920, sales: 72,
+    stock: 15, status: 'active', featured: true, createdAt: '2024-01-03',
+    deliveryTime: 'Instant', minOrder: 1, maxOrder: 3
+  }
+];
+
+const orders = [
+  {
+    id: 'ORD-001', buyerId: 2, sellerId: 1, listingId: 1,
+    title: '10,000 Free Fire Diamonds', amount: 450, status: 'completed',
+    escrowStatus: 'released', createdAt: '2024-01-25', completedAt: '2024-01-25',
+    buyerConfirmed: true, sellerDelivered: true, dispute: false
+  },
+  {
+    id: 'ORD-002', buyerId: 2, sellerId: 1, listingId: 4,
+    title: 'PlayStation Store $20 Gift Card', amount: 680, status: 'in_progress',
+    escrowStatus: 'held', createdAt: '2024-01-28', completedAt: null,
+    buyerConfirmed: false, sellerDelivered: true, dispute: false
+  },
+  {
+    id: 'ORD-003', buyerId: 2, sellerId: 1, listingId: 2,
+    title: '600 UC PUBG Mobile', amount: 180, status: 'disputed',
+    escrowStatus: 'held', createdAt: '2024-01-20', completedAt: null,
+    buyerConfirmed: false, sellerDelivered: false, dispute: true
+  }
+];
+
+const reviews = [
+  { id: 1, orderId: 'ORD-001', buyerId: 2, sellerId: 1, rating: 5, comment: 'Super fast delivery! Highly recommended seller. Will buy again.', createdAt: '2024-01-25' },
+  { id: 2, orderId: null, buyerId: null, sellerId: 1, rating: 5, comment: 'Best FF diamonds seller in Egypt. Always instant delivery!', createdAt: '2024-01-22' },
+  { id: 3, orderId: null, buyerId: null, sellerId: 1, rating: 4, comment: 'Good service, slight delay but resolved quickly.', createdAt: '2024-01-18' }
+];
+
+const notifications = [
+  { id: 1, userId: 2, type: 'order', message: 'Your order ORD-002 has been delivered. Please confirm receipt.', read: false, createdAt: '2024-01-28' },
+  { id: 2, userId: 2, type: 'promo', message: 'New listings added in Gift Cards! Check them out.', read: true, createdAt: '2024-01-27' },
+  { id: 3, userId: 1, type: 'sale', message: 'You have a new order: ORD-002 for 680 EGP.', read: true, createdAt: '2024-01-28' }
+];
+
+const disputes = [
+  { id: 1, orderId: 'ORD-003', buyerId: 2, sellerId: 1, reason: 'Item not delivered as described', status: 'open', createdAt: '2024-01-21', evidence: 'Screenshots attached' }
+];
+
+const walletTransactions = [
+  { id: 1, userId: 2, type: 'deposit', amount: 1000, method: 'Fawry', status: 'completed', createdAt: '2024-01-20', note: 'Wallet top-up' },
+  { id: 2, userId: 2, type: 'purchase', amount: -450, method: 'wallet', status: 'completed', createdAt: '2024-01-25', note: 'Order ORD-001' },
+  { id: 3, userId: 2, type: 'deposit', amount: 800, method: 'Vodafone Cash', status: 'completed', createdAt: '2024-01-26', note: 'Wallet top-up' },
+  { id: 4, userId: 2, type: 'purchase', amount: -680, method: 'wallet', status: 'completed', createdAt: '2024-01-28', note: 'Order ORD-002' }
+];
+
+const affiliates = [
+  { userId: 1, code: 'AHMED2024', clicks: 145, signups: 23, earnings: 320, pendingPayout: 120, totalPaid: 200 }
+];
+
+const sellerAnalytics = {
+  1: {
+    totalRevenue: 45200, thisMonth: 8400, lastMonth: 6200,
+    totalOrders: 312, completionRate: 98.7, avgResponseTime: '4 min',
+    topGames: ['Free Fire', 'PUBG Mobile', 'Clash of Clans'],
+    revenueChart: [4200, 5100, 3800, 6200, 5900, 7100, 8400],
+    ordersChart: [28, 34, 26, 41, 38, 47, 56],
+    streak: { current: 7, best: 15, weekly: 5 },
+    goal: { target: 10000, current: 8400, trades: { target: 50, current: 47 } }
+  }
 };
+
+
+module.exports = { users, categories, listings, orders, reviews, notifications, disputes, walletTransactions, affiliates, sellerAnalytics, premiumPlans, faqs };

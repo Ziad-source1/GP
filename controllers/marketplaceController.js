@@ -10,7 +10,7 @@ exports.browse = (req, res) => {
   else if (sort === 'price_desc') filtered.sort((a, b) => b.price - a.price);
   else if (sort === 'popular') filtered.sort((a, b) => b.sales - a.sales);
   else filtered.sort((a, b) => b.featured - a.featured);
-  res.render('marketplace/browse', { title: 'Marketplace — LEVEL UP', listings: filtered, categories, query: req.query });
+  res.render('marketplace/browse', { title: 'Marketplace — LEVEL UP', listings: [filtered[0]], categories, query: req.query });
 };
 
 exports.category = (req, res) => {

@@ -36,7 +36,7 @@
         <div class="listing-card animate-fade-up" style="animation-delay:<%= i * 0.05 %>s">
           <div class="listing-card-img">
             <%= categories.find(c => c.id === listing.category)?.icon || '🎮' %>
-            <% if (listing.featured) { %><span class="listing-card-badge badge-featured">⭐ Featured</span><% } %>
+            <!-- <% if (listing.featured) { %><span class="listing-card-badge badge-featured">⭐ Featured</span><% } %> -->
           </div>
           <div class="listing-card-body">
             <div class="listing-game"><%= listing.game %></div>
