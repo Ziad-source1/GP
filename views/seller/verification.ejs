@@ -1,6 +1,10 @@
 <%- include('../partials/header') %>
 <div class="dashboard-wrap">
-  <%- include('../partials/seller-sidebar') %>
+  <% if (user.role == 'seller') { %>
+    <%- include('../partials/seller-sidebar') %>
+    <% } else { %>
+      <%- include('../partials/buyer-sidebar') %>
+      <% } %>
   <div class="dashboard-main">
     <div class="dashboard-header">
       <div class="dashboard-title">🪪 Seller Verification</div>

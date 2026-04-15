@@ -1,15 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/pagesController');
 
-router.get('/about', ctrl.about);
-router.get('/how-escrow', ctrl.howEscrow);
-router.get('/premium-seller', ctrl.premiumSeller);
-router.get('/affiliate-program', ctrl.affiliateProgram);
-router.get('/faq', ctrl.faq);
-router.get('/contact', ctrl.contact);
-router.post('/contact', ctrl.sendContact);
-router.get('/terms', ctrl.terms);
-router.get('/privacy', ctrl.privacy);
+router.get('/about', (req, res) => {
+  res.render('pages/about', { title: 'About Us', user: req.session.user || null });
+});
+
+router.get('/contact', (req, res) => {
+  res.render('pages/contact', { title: 'Contact', user: req.session.user || null });
+});
+
+router.get('/faq', (req, res) => {
+  res.render('pages/faq', { title: 'FAQ', user: req.session.user || null });
+});
+
+router.get('/privacy', (req, res) => {
+  res.render('pages/privacy', { title: 'Privacy Policy', user: req.session.user || null });
+});
+
+router.get('/terms', (req, res) => {
+  res.render('pages/terms', { title: 'Terms of Service', user: req.session.user || null });
+});
 
 module.exports = router;

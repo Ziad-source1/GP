@@ -24,7 +24,7 @@
     <a href="/seller/create-listing" class="sidebar-link <%= currentPath === '/seller/create-listing' ? 'active' : '' %>">
       <span class="sidebar-link-icon">➕</span> Create Listing
     </a>
-    <a href="/seller/listings" class="sidebar-link <%= currentPath === '/seller/listings' ? 'active' : '' %>">
+    <a href="/seller/manage-listings" class="sidebar-link <%= currentPath === '/seller/listings' ? 'active' : '' %>">
       <span class="sidebar-link-icon">📋</span> Manage Listings
     </a>
   </div>
@@ -33,7 +33,6 @@
   <div class="sidebar-section">
     <a href="/seller/orders" class="sidebar-link <%= currentPath === '/seller/orders' ? 'active' : '' %>">
       <span class="sidebar-link-icon">📦</span> Orders
-      <span class="sidebar-badge">2</span>
     </a>
   </div>
 
@@ -52,9 +51,9 @@
 
   <div class="sidebar-label">Account</div>
   <div class="sidebar-section">
-    <a href="/seller/verification" class="sidebar-link <%= currentPath === '/seller/verification' ? 'active' : '' %>">
+    <!-- <a href="/seller/verification" class="sidebar-link <%= currentPath === '/seller/verification' ? 'active' : '' %>">
       <span class="sidebar-link-icon">🪪</span> Verification
-    </a>
+    </a> -->
     <a href="/seller/premium" class="sidebar-link <%= currentPath === '/seller/premium' ? 'active' : '' %>">
       <span class="sidebar-link-icon">⭐</span> Go Premium
     </a>

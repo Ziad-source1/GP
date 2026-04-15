@@ -4,6 +4,7 @@ const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const morgan = require('morgan');
 const path = require('path');
+const { fundWallet } = require('./models/middleware');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/buyer', require('./routes/buyer'));
 app.use('/seller', require('./routes/seller'));
 app.use('/admin', require('./routes/admin'));
 app.use('/pages', require('./routes/pages'));
+app.post('/fund-wallet', fundWallet);
 
 // 404
 app.use((req, res) => {

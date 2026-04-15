@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/marketplaceController');
+const marketplaceController = require('../controllers/marketplaceController');
 
-router.get('/', ctrl.browse);
-router.get('/category/:cat', ctrl.category);
-router.get('/listing/:id', ctrl.listing);
-router.get('/seller/:id', ctrl.sellerProfile);
+router.get('/', marketplaceController.browse);
+router.get('/category/:cat', marketplaceController.category);
+router.get('/listing/:id', marketplaceController.listing);
+router.get('/seller/:id', marketplaceController.sellerProfile);
 
 module.exports = router;

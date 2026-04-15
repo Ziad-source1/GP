@@ -35,7 +35,8 @@
       <% listings.forEach((listing, i) => { %>
         <div class="listing-card animate-fade-up" style="animation-delay:<%= i * 0.05 %>s">
           <div class="listing-card-img">
-            <%= categories.find(c => c.id === listing.category)?.icon || '🎮' %>
+            <img src="<%= listing.image %>" alt="game-image">
+            <!-- <%= categories.find(c => c.id === listing.category)?.icon || '🎮' %> -->
             <!-- <% if (listing.featured) { %><span class="listing-card-badge badge-featured">⭐ Featured</span><% } %> -->
           </div>
           <div class="listing-card-body">

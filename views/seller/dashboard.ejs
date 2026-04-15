@@ -1,7 +1,7 @@
-<%- include('../partials/header') %>
+<%- include('../partials/header', { user: user }) %>
 
 <div class="dashboard-wrap">
-  <%- include('../partials/seller-sidebar') %>
+  <%- include('../partials/seller-sidebar', { user: user }) %>
   <div class="dashboard-main">
     <div class="dashboard-header">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
@@ -21,53 +21,62 @@
       <div class="stat-card">
         <div class="stat-card-icon">💰</div>
         <div class="stat-card-label">Total Revenue</div>
-        <div class="stat-card-value text-green"><%= analytics.totalRevenue.toLocaleString() %> EGP</div>
+        <div class="stat-card-value text-green"><%= (analytics.totalRevenue || 0).toLocaleString() %> EGP</div>
         <div class="stat-card-change up">↑ All time</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-icon">📅</div>
         <div class="stat-card-label">This Month</div>
-        <div class="stat-card-value text-green"><%= analytics.thisMonth.toLocaleString() %> EGP</div>
-        <div class="stat-card-change up">↑ <%= Math.round((analytics.thisMonth - analytics.lastMonth)/analytics.lastMonth*100) %>% vs last month</div>
+        <div class="stat-card-value text-green"><%= (analytics.thisMonth || 0).toLocaleString() %> EGP</div>
+        <% if (analytics.lastMonth && analytics.lastMonth > 0) { %>
+          <div class="stat-card-change up">↑ <%= Math.round(((analytics.thisMonth || 0) - (analytics.lastMonth || 0)) / (analytics.lastMonth || 1) * 100) %>% vs last month</div>
+        <% } else { %>
+          <div class="stat-card-change up">↑ New month</div>
+        <% } %>
       </div>
       <div class="stat-card">
         <div class="stat-card-icon">📦</div>
         <div class="stat-card-label">Total Orders</div>
-        <div class="stat-card-value"><%= analytics.totalOrders %></div>
+        <div class="stat-card-value"><%= analytics.totalOrders || 0 %></div>
       </div>
       <div class="stat-card">
         <div class="stat-card-icon">✅</div>
         <div class="stat-card-label">Completion Rate</div>
-        <div class="stat-card-value text-green"><%= analytics.completionRate %>%</div>
+        <div class="stat-card-value text-green"><%= analytics.completionRate || 100 %>%</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-icon">⚡</div>
         <div class="stat-card-label">Avg Response</div>
-        <div class="stat-card-value"><%= analytics.avgResponseTime %></div>
+        <div class="stat-card-value"><%= analytics.avgResponseTime || '< 1 hour' %></div>
       </div>
     </div>
 
     <!-- Revenue + streak row -->
     <div class="grid-2" style="margin-bottom:24px;gap:20px">
-      <!-- Revenue chart mockup -->
+      <!-- Revenue chart -->
       <div class="card">
         <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
           <span style="font-weight:700">📈 Revenue — Last 7 Days</span>
-          <span class="tag tag-green">↑ <%= Math.round((analytics.thisMonth - analytics.lastMonth)/analytics.lastMonth*100) %>%</span>
+          <% if (analytics.lastMonth && analytics.lastMonth > 0) { %>
+            <span class="tag tag-green">↑ <%= Math.round(((analytics.thisMonth || 0) - (analytics.lastMonth || 0)) / (analytics.lastMonth || 1) * 100) %>%</span>
+          <% } %>
         </div>
         <div class="card-body">
           <div style="display:flex;align-items:flex-end;gap:8px;height:100px">
-            <% const max = Math.max(...analytics.revenueChart); %>
-            <% const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; %>
-            <% analytics.revenueChart.forEach((v, i) => { %>
+            <% 
+            const revenueChart = analytics.revenueChart && Array.isArray(analytics.revenueChart) ? analytics.revenueChart : [0, 0, 0, 0, 0, 0, 0];
+            const max = Math.max(...revenueChart, 1);
+            const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+            %>
+            <% for (let i = 0; i < Math.min(revenueChart.length, 7); i++) { %>
               <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:100%;background:linear-gradient(to top,var(--green),var(--cyan));border-radius:4px 4px 0 0;height:<%= Math.round((v/max)*80) %>px;transition:height 0.5s ease;min-height:4px"></div>
+                <div style="width:100%;background:linear-gradient(to top,var(--green),var(--cyan));border-radius:4px 4px 0 0;height:<%= Math.round((revenueChart[i]/max)*80) %>px;transition:height 0.5s ease;min-height:4px"></div>
                 <div style="font-size:10px;color:var(--text-muted)"><%= days[i] %></div>
               </div>
-            <% }) %>
+            <% } %>
           </div>
           <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:var(--text-muted)">Peak: <%= Math.max(...analytics.revenueChart).toLocaleString() %> EGP</span>
+            <span style="color:var(--text-muted)">Peak: <%= Math.max(...revenueChart).toLocaleString() %> EGP</span>
             <a href="/seller/earnings" style="color:var(--green)">Full report →</a>
           </div>
         </div>
@@ -79,19 +88,19 @@
         <div class="card-body">
           <div style="display:flex;gap:24px;margin-bottom:20px">
             <div style="text-align:center">
-              <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:900;color:var(--green)"><%= analytics.streak.current %></div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:900;color:var(--green)"><%= (analytics.streak && analytics.streak.current) || 0 %></div>
               <div style="font-size:12px;color:var(--text-muted)">Day Streak 🔥</div>
             </div>
             <div style="flex:1">
               <div style="font-size:13px;color:var(--text-dim);margin-bottom:8px">This week's progress</div>
               <div class="streak-dots">
-                <% for(let i=0;i<7;i++) { %>
-                  <div class="streak-dot <%= i < analytics.streak.weekly ? 'done' : i === analytics.streak.weekly ? 'today' : '' %>">
-                    <%= i < analytics.streak.weekly ? '✓' : (i === analytics.streak.weekly ? '★' : '') %>
+                <% for(let i = 0; i < 7; i++) { %>
+                  <div class="streak-dot <%= i < ((analytics.streak && analytics.streak.weekly) || 0) ? 'done' : i === ((analytics.streak && analytics.streak.weekly) || 0) ? 'today' : '' %>">
+                    <%= i < ((analytics.streak && analytics.streak.weekly) || 0) ? '✓' : (i === ((analytics.streak && analytics.streak.weekly) || 0) ? '★' : '') %>
                   </div>
                 <% } %>
               </div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:12px">Best streak: <span style="color:var(--gold);font-weight:700"><%= analytics.streak.best %> days</span></div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:12px">Best streak: <span style="color:var(--gold);font-weight:700"><%= (analytics.streak && analytics.streak.best) || 0 %> days</span></div>
             </div>
           </div>
           <a href="/seller/streak" class="btn btn-outline btn-sm btn-block">View Full Streak →</a>
@@ -110,22 +119,24 @@
           <div>
             <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
               <span style="color:var(--text-dim)">Revenue Goal</span>
-              <span style="font-weight:700"><%= analytics.goal.current.toLocaleString() %> / <%= analytics.goal.target.toLocaleString() %> EGP</span>
+              <span style="font-weight:700"><%= ((analytics.goal && analytics.goal.current) || 0).toLocaleString() %> / <%= ((analytics.goal && analytics.goal.target) || 10000).toLocaleString() %> EGP</span>
             </div>
             <div class="progress progress-lg">
-              <div class="progress-bar" data-width="<%= Math.round(analytics.goal.current/analytics.goal.target*100) %>%" style="width:<%= Math.round(analytics.goal.current/analytics.goal.target*100) %>%"></div>
+              <% const revenuePercent = Math.min(Math.round(((analytics.goal && analytics.goal.current) || 0) / ((analytics.goal && analytics.goal.target) || 10000) * 100), 100); %>
+              <div class="progress-bar" style="width:<%= revenuePercent %>%"></div>
             </div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:6px"><%= Math.round(analytics.goal.current/analytics.goal.target*100) %>% complete</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px"><%= revenuePercent %>% complete</div>
           </div>
           <div>
             <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
               <span style="color:var(--text-dim)">Trade Count Goal</span>
-              <span style="font-weight:700"><%= analytics.goal.trades.current %> / <%= analytics.goal.trades.target %> trades</span>
+              <span style="font-weight:700"><%= ((analytics.goal && analytics.goal.trades && analytics.goal.trades.current) || 0) %> / <%= ((analytics.goal && analytics.goal.trades && analytics.goal.trades.target) || 10) %> trades</span>
             </div>
             <div class="progress progress-lg">
-              <div class="progress-bar" data-width="<%= Math.round(analytics.goal.trades.current/analytics.goal.trades.target*100) %>%" style="width:<%= Math.round(analytics.goal.trades.current/analytics.goal.trades.target*100) %>%"></div>
+              <% const tradesPercent = Math.min(Math.round(((analytics.goal && analytics.goal.trades && analytics.goal.trades.current) || 0) / ((analytics.goal && analytics.goal.trades && analytics.goal.trades.target) || 10) * 100), 100); %>
+              <div class="progress-bar" style="width:<%= tradesPercent %>%"></div>
             </div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:6px"><%= Math.round(analytics.goal.trades.current/analytics.goal.trades.target*100) %>% complete</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px"><%= tradesPercent %>% complete</div>
           </div>
         </div>
       </div>
@@ -135,18 +146,18 @@
     <div class="grid-2" style="gap:20px">
       <div class="card">
         <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-          <span style="font-weight:700">📋 Active Listings (<%= listings.length %>)</span>
-          <a href="/seller/listings" style="font-size:12px;color:var(--green)">Manage →</a>
+          <span style="font-weight:700">📋 Active Listings (<%= (listings && listings.length) || 0 %>)</span>
+          <a href="/seller/manage-listings" style="font-size:12px;color:var(--green)">Manage →</a>
         </div>
-        <% if (listings.length > 0) { %>
+        <% if (listings && listings.length > 0) { %>
           <% listings.slice(0,5).forEach(l => { %>
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
               <div style="font-size:24px">🎮</div>
               <div style="flex:1;min-width:0">
-                <div style="font-weight:600;font-size:13px;truncate"><%= l.title %></div>
-                <div style="font-size:11px;color:var(--text-muted)"><%= l.sales %> sold · <%= l.stock %> in stock</div>
+                <div style="font-weight:600;font-size:13px;truncate"><%= l.title || l.description || 'Untitled' %></div>
+                <div style="font-size:11px;color:var(--text-muted)"><%= l.sales || 0 %> sold · <%= l.stock || 0 %> in stock</div>
               </div>
-              <div style="font-weight:700;color:var(--gold);font-size:14px"><%= l.price.toLocaleString() %> EGP</div>
+              <div style="font-weight:700;color:var(--gold);font-size:14px"><%= (l.price || 0).toLocaleString() %> EGP</div>
             </div>
           <% }) %>
         <% } else { %>
@@ -162,16 +173,16 @@
           <span style="font-weight:700">📦 Recent Orders</span>
           <a href="/seller/orders" style="font-size:12px;color:var(--green)">View all →</a>
         </div>
-        <% if (orders.length > 0) { %>
+        <% if (orders && orders.length > 0) { %>
           <% orders.slice(0,5).forEach(o => { %>
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
               <div style="flex:1;min-width:0">
                 <div class="font-mono text-green" style="font-size:11px">#<%= o.id %></div>
-                <div style="font-weight:600;font-size:13px"><%= o.title %></div>
+                <div style="font-weight:600;font-size:13px"><%= o.title || 'Order' %></div>
               </div>
               <div style="text-align:right">
-                <div style="font-weight:700;color:var(--gold);font-size:13px"><%= o.amount.toLocaleString() %> EGP</div>
-                <span class="status status-<%= o.status %>" style="font-size:10px"><%= o.status.replace('_',' ') %></span>
+                <div style="font-weight:700;color:var(--gold);font-size:13px"><%= (o.amount || 0).toLocaleString() %> EGP</div>
+                <span class="status status-<%= o.status || 'pending' %>" style="font-size:10px"><%= (o.status || 'pending').replace('_', ' ') %></span>
               </div>
             </div>
           <% }) %>

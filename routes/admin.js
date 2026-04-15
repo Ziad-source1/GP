@@ -1,18 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/adminController');
-const { requireAdmin } = require('../models/middleware');
+const { requireLogin, requireAdmin } = require('../models/middleware');
+const adminController = require('../controllers/adminController');
 
+router.use(requireLogin);
 router.use(requireAdmin);
-router.get('/dashboard', ctrl.dashboard);
-router.get('/users', ctrl.userManagement);
-router.get('/verification', ctrl.verificationReview);
-router.post('/verification/:id/approve', ctrl.approveVerification);
-router.post('/verification/:id/reject', ctrl.rejectVerification);
-router.get('/escrow', ctrl.escrowMonitoring);
-router.get('/disputes', ctrl.disputeResolution);
-router.get('/fraud', ctrl.fraudDetection);
-router.get('/commission', ctrl.commissionControl);
-router.get('/featured', ctrl.featuredControl);
+
+router.get('/dashboard', adminController.dashboard);
+
+router.get('/users', (req, res) => {
+  res.render('admin/users', { title: 'Manage Users', user: req.session.user });
+});
 
 module.exports = router;

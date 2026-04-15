@@ -8,7 +8,7 @@ exports.dashboard = (req, res) => {
     disputes: disputes.filter(d => d.status === 'open').length,
     pendingVerifications: 3
   };
-  res.render('admin/dashboard', { title: 'Admin Dashboard — LEVEL UP', stats, recentOrders: orders, users });
+  res.render('admin/dashboard', { title: 'Admin Dashboard — LEVEL UP',stats, recentOrders: orders, users });
 };
 
 exports.userManagement = (req, res) => {
