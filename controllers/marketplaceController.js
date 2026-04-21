@@ -1,4 +1,4 @@
-const { getAllOffers, getOfferById, getOffersBySeller } = require('../models/data');
+const { getAllOffers, getOfferById, getOffersBySeller, reviews } = require('../models/data');
 
 // Browse marketplace
 exports.browse = async (req, res) => {
@@ -105,7 +105,8 @@ exports.category = async (req, res) => {
 // Single listing view
 exports.listing = async (req, res) => {
   try {
-    const offer = await getOfferById(parseInt(req.params.id));
+    const offerId = req.params.id;
+    const offer = await getOfferById(offerId);
     if (!offer) {
       req.flash('error', 'Listing not found');
       return res.redirect('/marketplace');
@@ -119,6 +120,7 @@ exports.listing = async (req, res) => {
       stock: offer.stock,
       sellerName: offer.seller_name || 'Seller',
       delivery_time: '24 hours',
+      image: offer.product_image || null,
       tags: ['instant', 'safe', 'verified']
     };
     
@@ -135,7 +137,8 @@ exports.listing = async (req, res) => {
       title: listing.title + ' — LEVEL UP', 
       listing: listing,
       seller: seller,  // Required for template
-      user: req.session.user || null 
+      user: req.session.user || null ,
+      reviews
     });
   } catch (error) {
     console.error('Listing error:', error);

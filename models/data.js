@@ -257,6 +257,12 @@ async function getServiceById(id) {
 // ============================================================
 // OFFERS
 // ============================================================
+
+const reviews = [
+  { id: 1, orderId: 'ORD-001', buyerId: 2, sellerId: 1, rating: 5, comment: 'Super fast delivery! Highly recommended seller. Will buy again.', createdAt: '2024-01-25' },
+  { id: 2, orderId: null, buyerId: null, sellerId: 1, rating: 5, comment: 'Best FF diamonds seller in Egypt. Always instant delivery!', createdAt: '2024-01-22' },
+  { id: 3, orderId: null, buyerId: null, sellerId: 1, rating: 4, comment: 'Good service, slight delay but resolved quickly.', createdAt: '2024-01-18' }
+];
 async function getAllOffers() {
   const [rows] = await db.query(
     `SELECT o.*, p.name as product_name, s.name as service_name, u.username as seller_name, p.image as product_image
@@ -270,7 +276,7 @@ async function getAllOffers() {
 
 async function getOfferById(id) {
   const [rows] = await db.query(
-    `SELECT o.*, p.name as product_name, s.name as service_name, u.username as seller_name
+    `SELECT o.*, p.name as product_name, s.name as service_name, u.username as seller_name, p.image as product_image
      FROM offers o
      JOIN products p ON p.id = o.product_id
      JOIN services s ON s.id = o.service_id
@@ -488,7 +494,7 @@ module.exports = {
   getAllServices, getServiceById,
   
   // Offers
-  getAllOffers, getOfferById, getOffersBySeller, createOffer,
+  getAllOffers, getOfferById, getOffersBySeller, createOffer, reviews,
   
   // Orders
   getOrdersByBuyer, getOrdersBySeller, getOrderById,
