@@ -26,11 +26,7 @@
         <div class="stat-card-label">Completed</div>
         <div class="stat-card-value text-green"><%= completed.length %></div>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-icon">⏳</div>
-        <div class="stat-card-label">Active Orders</div>
-        <div class="stat-card-value" style="color:var(--orange)"><%= active.length %></div>
-      </div>
+      
       <div class="stat-card">
         <div class="stat-card-icon">💰</div>
         <div class="stat-card-label">Wallet Balance</div>
@@ -52,17 +48,17 @@
               <% active.forEach(o => { %>
                 <tr>
                   <td class="font-mono text-sm text-green">#<%= o.id %></td>
-                  <td><%= o.title %></td>
-                  <td class="text-gold font-bold"><%= o.amount.toLocaleString() %> EGP</td>
-                  <td><span class="status status-<%= o.status %>"><%= o.status.replace('_',' ') %></span></td>
-                  <td><span class="status status-<%= o.escrowStatus %>"><%= o.escrowStatus %></span></td>
-                  <td>
+                  <td><%= o.product_name%></td>
+                  <td class="text-gold font-bold"><%= o.total_price.toLocaleString() %> EGP</td>
+                  <td><span class="status status-<%= o.is_paid %>"><%= o.is_paid %></span></td>
+                  <!-- <td><span class="status status-<%= o.escrowStatus %>"><%= o.escrowStatus %></span></td> -->
+                  <!-- <td>
                     <% if (o.sellerDelivered && !o.buyerConfirmed) { %>
                       <button class="btn btn-green btn-sm">✅ Confirm Receipt</button>
                     <% } else { %>
                       <button class="btn btn-ghost btn-sm">💬 Chat</button>
                     <% } %>
-                  </td>
+                  </td> -->
                 </tr>
               <% }) %>
             </tbody>
@@ -85,10 +81,10 @@
               <% orders.forEach(o => { %>
                 <tr>
                   <td class="font-mono text-sm text-green">#<%= o.id %></td>
-                  <td><%= o.title %></td>
-                  <td class="text-gold font-bold"><%= o.amount.toLocaleString() %> EGP</td>
-                  <td><span class="status status-<%= o.status %>"><%= o.status.replace('_',' ') %></span></td>
-                  <td class="text-muted text-sm"><%= o.createdAt %></td>
+                  <td><%= o.product_name%></td>
+                  <td class="text-gold font-bold"><%= o.total_price.toLocaleString() %> EGP</td>
+                  <td><span class="status status-<%= o.is_paid %>"><%= o.is_paid %></span></td>
+                  <td class="text-muted text-sm"><%= o.created_at %></td>
                 </tr>
               <% }) %>
             </tbody>

@@ -16,16 +16,14 @@
 
   <div class="sidebar-label">Orders</div>
   <div class="sidebar-section">
-    <a href="/buyer/active-orders" class="sidebar-link <%= currentPath === '/buyer/active-orders' ? 'active' : '' %>">
-      <span class="sidebar-link-icon">⏳</span> Active Orders
-      <span class="sidebar-badge"></span>
+    <a href="/buyer/orders" class="sidebar-link <%= currentPath === '/buyer/active-orders' ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⏳</span> Orders
     </a>
-    <a href="/buyer/orders" class="sidebar-link <%= currentPath === '/buyer/orders' ? 'active' : '' %>">
+    <!-- <a href="/buyer/orders-history" class="sidebar-link <%= currentPath === '/buyer/orders' ? 'active' : '' %>">
       <span class="sidebar-link-icon">📋</span> Order History
-    </a>
+    </a> -->
     <a href="/buyer/disputes" class="sidebar-link <%= currentPath === '/buyer/disputes' ? 'active' : '' %>">
       <span class="sidebar-link-icon">⚖️</span> Disputes
-      <span class="sidebar-badge" style="background:var(--orange)"></span>
     </a>
   </div>
 
@@ -36,7 +34,6 @@
     </a>
     <a href="/buyer/notifications" class="sidebar-link <%= currentPath === '/buyer/notifications' ? 'active' : '' %>">
       <span class="sidebar-link-icon">🔔</span> Notifications
-      <span class="sidebar-badge"></span>
     </a>
   </div>
 

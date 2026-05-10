@@ -7,8 +7,8 @@ router.use(requireLogin);
 
 router.get('/dashboard', buyerController.dashboard);
 router.get('/wallet', buyerController.wallet);
-router.get('/order-history', buyerController.orderHistory);
-router.get('/active-orders', buyerController.activeOrders);
+// router.get('/order-history', buyerController.orderHistory);
+router.get('/orders', buyerController.getOrders);
 router.get('/disputes', buyerController.disputes);
 router.get('/notifications', buyerController.notifications);
 router.get('/reviews', buyerController.reviews);

@@ -355,8 +355,8 @@ async function getOrderById(orderId) {
 
 async function createOrder(userId, offerId, total_price) {
   const [result] = await db.query(
-    'INSERT INTO orders (user_id, offer_id, total_price, is_paid) VALUES (?, ?, ?, ?)',
-    [userId, offerId, total_price, 0]
+    'INSERT INTO orders (user_id, offer_id, total_price,user_review,is_paid) VALUES (?, ?, ?, ?, ?)',
+    [userId, offerId, total_price,"", 0]
   );
   return result.insertId;
 }

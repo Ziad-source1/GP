@@ -13,15 +13,15 @@
             <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
               <div>
                 <div class="font-mono text-green text-sm" style="margin-bottom:4px">#<%= o.id %></div>
-                <div style="font-size:18px;font-weight:700;margin-bottom:8px"><%= o.title %></div>
+                <div style="font-size:18px;font-weight:700;margin-bottom:8px"><%= o.product_name%></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap">
-                  <span class="status status-<%= o.status %>"><%= o.status.replace('_',' ') %></span>
-                  <span class="status status-<%= o.escrowStatus %>">🔒 Escrow: <%= o.escrowStatus %></span>
+                  <span class="status status-<%= o.is_paid %>"><%= o.is_paid %></span>
+                  <!-- <span class="status status-<%= o.escrowStatus %>">🔒 Escrow: <%= o.escrowStatus %></span> -->
                 </div>
               </div>
               <div style="text-align:right">
-                <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:var(--gold)"><%= o.amount.toLocaleString() %> EGP</div>
-                <div style="font-size:12px;color:var(--text-muted)">Ordered: <%= o.createdAt %></div>
+                <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:var(--gold)"><%= o.total_price.toLocaleString() %> EGP</div>
+                <div style="font-size:12px;color:var(--text-muted)">Ordered: <%= o.created_at %></div>
               </div>
             </div>
             <!-- Escrow progress -->
@@ -33,33 +33,33 @@
                   <div class="escrow-step-label">Payment Locked</div>
                   <div class="escrow-step-sub">Funds in escrow</div>
                 </div>
-                <div class="escrow-step <%= o.sellerDelivered ? 'active' : '' %>">
+                <!-- <div class="escrow-step <%= o.sellerDelivered ? 'active' : '' %>">
                   <div class="escrow-step-icon">📦</div>
                   <div class="escrow-step-line"></div>
                   <div class="escrow-step-label">Seller Delivered</div>
                   <div class="escrow-step-sub"><%= o.sellerDelivered ? '✅ Done' : 'Waiting...' %></div>
-                </div>
-                <div class="escrow-step <%= o.buyerConfirmed ? 'active' : '' %>">
+                </div> -->
+                <!-- <div class="escrow-step <%= o.buyerConfirmed ? 'active' : '' %>">
                   <div class="escrow-step-icon">✅</div>
                   <div class="escrow-step-line"></div>
                   <div class="escrow-step-label">You Confirm</div>
                   <div class="escrow-step-sub"><%= o.buyerConfirmed ? '✅ Done' : 'Pending' %></div>
-                </div>
-                <div class="escrow-step <%= o.escrowStatus === 'released' ? 'active' : '' %>">
+                </div> -->
+                <!-- <div class="escrow-step <%= o.escrowStatus === 'released' ? 'active' : '' %>">
                   <div class="escrow-step-icon">💰</div>
                   <div class="escrow-step-label">Funds Released</div>
                   <div class="escrow-step-sub"><%= o.escrowStatus === 'released' ? 'Completed' : 'Locked' %></div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-              <% if (o.sellerDelivered && !o.buyerConfirmed) { %>
+              <!-- <% if (o.sellerDelivered && !o.buyerConfirmed) { %>
                 <button class="btn btn-green">✅ Confirm Receipt & Release Funds</button>
               <% } %>
               <button class="btn btn-ghost btn-sm">💬 Chat with Seller</button>
               <% if (!o.dispute) { %>
                 <button class="btn btn-red btn-sm">⚖️ Open Dispute</button>
-              <% } %>
+              <% } %> -->
             </div>
           </div>
         </div>

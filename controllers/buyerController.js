@@ -3,6 +3,7 @@ const { getOrdersByBuyer, getWalletByUserId, getOfferById } = require('../models
 exports.dashboard = async (req, res) => {
   try {
     const orders = await getOrdersByBuyer(req.session.user.id) || [];
+    console.log("orders", orders);
     const active = orders.filter(o => !o.is_paid);
     const completed = orders.filter(o => o.is_paid);
     
@@ -29,22 +30,13 @@ exports.wallet = async (req, res) => {
   }
 };
 
-exports.orderHistory = async (req, res) => {
-  try {
-    const orders = await getOrdersByBuyer(req.session.user.id) || [];
-    res.render('buyer/order-history', { title: 'Order History', orders, user: req.session.user });
-  } catch (error) {
-    res.render('buyer/order-history', { title: 'Order History', orders: [], user: req.session.user });
-  }
-};
 
-exports.activeOrders = async (req, res) => {
+exports.getOrders = async (req, res) => {
   try {
     const orders = await getOrdersByBuyer(req.session.user.id) || [];
-    const active = orders.filter(o => !o.is_paid);
-    res.render('buyer/active-orders', { title: 'Active Orders', orders: active, user: req.session.user });
+    res.render('buyer/active-orders', { title: 'Orders', orders, user: req.session.user });
   } catch (error) {
-    res.render('buyer/active-orders', { title: 'Active Orders', orders: [], user: req.session.user });
+    res.render('buyer/active-orders', { title: 'Orders', orders: [], user: req.session.user });
   }
 };
 
@@ -87,7 +79,7 @@ exports.placeOrder = async (req, res) => {
     const orderId = await createOrder(req.session.user.id, offerId, total_price);
     await markOrderAsPaid(orderId);
     req.flash('success', 'Order placed successfully!');
-    res.redirect('/buyer/active-orders');
+    res.redirect('/buyer/orders');
   } catch (error) {
     req.flash('error', 'Order failed');
     res.redirect('/marketplace');
