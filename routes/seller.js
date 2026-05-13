@@ -102,7 +102,31 @@ router.get('/premium', requireLogin, (req, res) => {
 });
 
 // Verification Status
-router.get('/verification', async (req, res) => {
+// Multer config for verification documents
+const verificationStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/verification/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const verificationUpload = multer({
+  storage: verificationStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|pdf/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (mimetype && extname) return cb(null, true);
+    cb(new Error('Only JPG, PNG or PDF files are allowed'));
+  }
+});
+
+// GET /seller/verification
+router.get('/verification', requireLogin, async (req, res) => {
   try {
     const seller = await getSellerByUserId(req.session.user.id);
     res.render('seller/verification', { 
@@ -113,6 +137,65 @@ router.get('/verification', async (req, res) => {
   } catch (error) {
     console.error('Verification error:', error);
     res.redirect('/seller/dashboard');
+  }
+});
+
+// POST /seller/verification
+router.post('/verification', requireLogin, verificationUpload.fields([
+  { name: 'idFront', maxCount: 1 },
+  { name: 'idBack',  maxCount: 1 },
+  { name: 'selfie',  maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const { fullName, idNumber } = req.body;
+
+    const nameParts = (fullName || '').trim().split(' ');
+    const firstName = nameParts[0] || 'Unknown';
+    const lastName  = nameParts.slice(1).join(' ') || 'Unknown';
+
+    const frontImg  = req.files?.idFront?.[0]?.filename || 'pending.jpg';
+    const backImg   = req.files?.idBack?.[0]?.filename  || 'pending.jpg';
+    const selfieImg = req.files?.selfie?.[0]?.filename  || 'pending.jpg';
+
+    const [[existing]] = await db.query(
+      `SELECT id FROM sellers WHERE user_id = ?`, [userId]
+    );
+
+    if (existing) {
+      await db.query(
+        `UPDATE sellers SET
+           f_name                = ?,
+           l_name                = ?,
+           national_id_number    = ?,
+           national_id_front_img = ?,
+           national_id_back_img  = ?,
+           selfie_holding_id_img = ?
+         WHERE user_id = ?`,
+        [firstName, lastName, idNumber || 0, frontImg, backImg, selfieImg, userId]
+      );
+    } else {
+      await db.query(
+        `INSERT INTO sellers
+           (f_name, l_name, dob, nationality, address, city, country,
+            national_id_number, national_id_front_img, national_id_back_img,
+            selfie_holding_id_img, user_id)
+         VALUES (?, ?, '2000-01-01', 'Unknown', 'Unknown', 'Unknown', 'Unknown',
+                 ?, ?, ?, ?, ?)`,
+        [firstName, lastName, idNumber || 0, frontImg, backImg, selfieImg, userId]
+      );
+    }
+
+    await db.query(`UPDATE users SET is_seller = 1 WHERE id = ?`, [userId]);
+    req.session.user.is_seller = 1;
+
+    req.flash('success', '✅ Documents submitted! An admin will review within 24–48 hours.');
+    res.redirect('/seller/verification');
+
+  } catch (err) {
+    console.error('Verification submission error:', err);
+    req.flash('error', '❌ Failed to submit. Please try again.');
+    res.redirect('/seller/verification');
   }
 });
 
@@ -405,20 +488,38 @@ router.get('/manage-listings', async (req, res) => {
   }
 });
 
+
 // Orders
 router.get('/orders', async (req, res) => {
   try {
-    const [orders] = await db.query(
-      `SELECT o.*, u.username as buyer_name, p.name as product_title, off.description as offer_description
+    const [orderRows] = await db.query(
+      `SELECT o.id, o.total_price, o.is_paid, o.created_at, o.user_review,
+              u.username as buyer_name,
+              p.name as product_title,
+              off.description as offer_description,
+              e.status as escrow_status
        FROM orders o
        JOIN users u ON o.user_id = u.id
        JOIN offers off ON o.offer_id = off.id
        JOIN products p ON off.product_id = p.id
+       LEFT JOIN escrow e ON e.order_id = o.id
        WHERE off.user_id = ?
        ORDER BY o.created_at DESC`,
       [req.session.user.id]
     );
-    
+
+    const orders = orderRows.map(o => ({
+      id:           o.id,
+      title:        o.product_title,
+      buyer:        o.buyer_name,
+      amount:       parseFloat(o.total_price),
+      status:       o.is_paid === 1 ? 'completed' : 'pending',
+      escrowStatus: o.escrow_status || 'held',
+      review:       o.user_review || '',
+      dispute:      false,
+      createdAt:    o.created_at ? new Date(o.created_at).toISOString().split('T')[0] : '—',
+    }));
+
     res.render('seller/orders', { 
       title: 'Orders', 
       user: req.session.user,
@@ -439,14 +540,24 @@ router.get('/earnings', async (req, res) => {
   try {
     const [earnings] = await db.query(
       `SELECT 
-         COALESCE(SUM(CASE WHEN o.is_paid = 1 THEN o.total_price ELSE 0 END), 0) as totalRevenue,
+         COALESCE(SUM(CASE WHEN o.is_paid = 1 THEN o.total_price ELSE 0 END), 0) AS totalRevenue,
          COALESCE(SUM(CASE 
            WHEN o.is_paid = 1 
            AND MONTH(o.created_at) = MONTH(CURRENT_DATE())
            AND YEAR(o.created_at) = YEAR(CURRENT_DATE())
-           THEN o.total_price ELSE 0 END), 0) as monthlyRevenue,
-         COALESCE(SUM(CASE WHEN o.is_paid = 0 THEN o.total_price ELSE 0 END), 0) as pendingPayout,
-         0 as totalWithdrawn
+           THEN o.total_price ELSE 0 END), 0) AS monthlyRevenue,
+         COALESCE(SUM(CASE 
+           WHEN o.is_paid = 1 
+           AND MONTH(o.created_at) = MONTH(CURRENT_DATE())
+           AND YEAR(o.created_at) = YEAR(CURRENT_DATE())
+           THEN o.total_price ELSE 0 END), 0) AS thisMonth,
+         COALESCE(SUM(CASE 
+           WHEN o.is_paid = 1 
+           AND MONTH(o.created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)
+           AND YEAR(o.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)
+           THEN o.total_price ELSE 0 END), 0) AS lastMonth,
+         COALESCE(SUM(CASE WHEN o.is_paid = 0 THEN o.total_price ELSE 0 END), 0) AS pendingPayout,
+         0 AS totalWithdrawn
        FROM orders o
        JOIN offers off ON o.offer_id = off.id
        WHERE off.user_id = ?`,
@@ -466,6 +577,8 @@ router.get('/earnings', async (req, res) => {
       analytics: {
         totalRevenue: 0,
         monthlyRevenue: 0,
+        thisMonth: 0,
+        lastMonth: 0,
         pendingPayout: 0,
         totalWithdrawn: 0
       }
@@ -649,13 +762,17 @@ router.get('/goal', async (req, res) => {
     
     const percentage = (sales[0].current / goal[0].target_count) * 100;
     
-    res.render('seller/goal', { 
+   res.render('seller/goal', { 
       title: 'Sales Goals', 
       user: req.session.user,
       goal: {
-        target: goal[0].target_count,
-        current: sales[0].current,
-        percentage: Math.min(percentage, 100)
+        target:     goal[0].target_count,
+        current:    sales[0].current,
+        percentage: Math.min(percentage, 100),
+        trades: {
+          current: sales[0].current,
+          target:  goal[0].target_count
+        }
       }
     });
   } catch (error) {
@@ -666,7 +783,11 @@ router.get('/goal', async (req, res) => {
       goal: {
         current: 0,
         target: 10,
-        percentage: 0
+        percentage: 0,
+        trades: {
+          current: 0,
+          target: 10
+        }
       }
     });
   }
@@ -739,6 +860,90 @@ router.get('/streak', async (req, res) => {
   }
 });
 
+// Mark order as complete
+router.post('/orders/:id/complete', requireLogin, async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    // Check if escrow row exists
+    const [[existing]] = await db.query(
+      `SELECT id FROM escrow WHERE order_id = ?`, [orderId]
+    );
+
+    if (existing) {
+      await db.query(
+        `UPDATE escrow SET status = 'released', released_at = NOW() WHERE order_id = ?`,
+        [orderId]
+      );
+    } else {
+      const [[order]] = await db.query(
+        `SELECT total_price FROM orders WHERE id = ?`, [orderId]
+      );
+      await db.query(
+        `INSERT INTO escrow (order_id, amount, status, released_at) VALUES (?, ?, 'released', NOW())`,
+        [orderId, order.total_price]
+      );
+    }
+
+    const [[order]] = await db.query(
+      'SELECT * from orders where id = ? ', [orderId]
+    )
+
+    console.log("DBG::order",order);
+    
+    // subtract buyer wallet
+    const buyerId = order.user_id;
+    const [[{balance: buyerBalance}]] = await db.query('SELECT balance from wallet where user_id = ? ',[buyerId]);
+    console.log("DBG::buyerBalance ", buyerBalance )
+    const newBuyerBalance = Number(buyerBalance) - Number(order.total_price);
+    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newBuyerBalance, buyerId]);
+    
+    // add to seller wallet
+    const sellerId = req.session.user.id;
+    const [[{balance: sellerBalance}]] = await db.query('SELECT balance from wallet where user_id = ?' , [sellerId]);
+    const newSellerBalance = Number(sellerBalance) + Number(order.total_price)
+    console.log("DBG::newsellerBalance " , newSellerBalance);
+    req.session.user.balance = newSellerBalance;
+    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newSellerBalance, sellerId]);
+    await db.query(`UPDATE orders SET is_paid = 1 WHERE id = ?`, [orderId]);
+    req.flash('success', `✅ Order #${orderId} marked as complete.`);
+  } catch (err) {
+    console.error('Complete order error:', err);
+    req.flash('error', '❌ Failed to complete order.');
+  }
+  res.redirect('/seller/orders');
+});
+
+// Chat page
+router.get('/chat/:orderId', requireLogin, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const [[order]] = await db.query(
+      `SELECT o.id, p.name as title, u.username as buyer, u.id as buyerId
+       FROM orders o
+       JOIN offers off ON o.offer_id = off.id
+       JOIN products p ON off.product_id = p.id
+       JOIN users u ON o.user_id = u.id
+       WHERE o.id = ? AND off.user_id = ?`,
+      [orderId, req.session.user.id]
+    );
+
+    if (!order) {
+      req.flash('error', 'Order not found.');
+      return res.redirect('/seller/orders');
+    }
+
+    res.render('seller/chat', {
+      title: 'Chat',
+      user: req.session.user,
+      order,
+      messages: [] // no chat table yet — empty for now
+    });
+  } catch (err) {
+    console.error('Chat error:', err);
+    res.redirect('/seller/orders');
+  }
+});
 
 
 module.exports = router;

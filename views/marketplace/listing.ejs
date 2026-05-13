@@ -14,7 +14,7 @@
       <!-- Listing header -->
       <div class="card card-green" style="margin-bottom:20px">
         <div style="height:240px;background:linear-gradient(135deg,#0A1A2A,#0D1F30);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative">
-            <img src="/<%= listing.image %>" alt="game-image"/>
+            <img src="<%= listing.image && listing.image.startsWith('product-') ? '/uploads/products/' + listing.image : '/' + listing.image %>" alt="game-image"/>
             <!-- <img src="hayday.png" alt="game-image"/> -->
         <!-- 🎮 -->
           <% if (listing.featured) { %>
@@ -148,6 +148,7 @@
               <button class="qty-btn qty-plus btn btn-ghost btn-sm" type="button">+</button>
             </div>
             <input type="hidden" id="base-price" value="<%= listing.price %>">
+            <input type="hidden" id="listing-id" value="<%= listing.id %>">
           </div>
 
           <div style="padding:12px;background:var(--black2);border-radius:8px;border:1px solid var(--border);margin-bottom:16px">
@@ -167,7 +168,7 @@
           </div>
 
           <% if (user) { %>
-            <a href="/buyer/checkout/<%= listing.id %>" class="btn btn-green btn-block btn-lg">🔒 Buy Now — Escrow Protected</a>
+            <a  class="btn btn-green btn-block btn-lg" onclick="navigateToCheckout()">🔒 Buy Now — Escrow Protected</a>
           <% } else { %>
             <a href="/auth/login" class="btn btn-green btn-block btn-lg">Login to Buy</a>
           <% } %>
@@ -218,6 +219,7 @@
 const qtyInput = document.getElementById('qty-input');
 const totalPrice = document.getElementById('total-price');
 const finalPrice = document.getElementById('final-price');
+const listingId = document.getElementById('listing-id');
 const base = parseInt(document.getElementById('base-price').value);
 if (qtyInput) {
   qtyInput.addEventListener('input', () => {
@@ -226,6 +228,12 @@ if (qtyInput) {
     if (totalPrice) totalPrice.textContent = total + ' EGP';
     if (finalPrice) finalPrice.textContent = total + ' EGP';
   });
+}
+
+function navigateToCheckout()
+{
+  console.log(qtyInput.value);
+  window.location.href = `http://localhost:8080/buyer/checkout/${listingId.value}?q=${qtyInput.value}`;
 }
 </script>
 

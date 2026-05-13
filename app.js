@@ -4,7 +4,7 @@ const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const morgan = require('morgan');
 const path = require('path');
-const { fundWallet } = require('./models/middleware');
+const { fundWallet ,updateBalance} = require('./models/middleware');
 
 const app = express();
 
@@ -18,7 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/uploads/products', express.static(path.join(__dirname, 'public/uploads/products')));
+app.use('/uploads/verification', express.static(path.join(__dirname, 'public/uploads/verification')));
+app.use(express.static(path.join(__dirname, 'public/uploads/products')));
 // Session
 app.use(session({
   secret: 'levelup_secret_2024',
@@ -26,6 +28,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
 }));
+
+
 
 app.use(flash());
 
@@ -41,6 +45,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
+app.use(updateBalance);
 app.use('/marketplace', require('./routes/marketplace'));
 app.use('/buyer', require('./routes/buyer'));
 app.use('/seller', require('./routes/seller'));

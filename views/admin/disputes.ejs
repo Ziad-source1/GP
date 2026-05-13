@@ -8,19 +8,20 @@
     </div>
     <% if (disputes.length > 0) { %>
       <% disputes.forEach(d => { %>
-        <div class="card" style="margin-bottom:16px;border-color:rgba(255,71,87,0.2)">
+        <div class="card" `="margin-bottom:16px;border-color:rgba(255,71,87,0.2)">
           <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-weight:700;color:var(--red)">⚖️ Dispute #<%= d.id %></span>
             <span class="status status-disputed"><%= d.status %></span>
           </div>
           <div class="card-body">
             <div class="grid-2" style="gap:16px;margin-bottom:16px">
-              <div><div class="form-label">Order</div><div class="font-mono text-green">#<%= d.orderId %></div></div>
-              <div><div class="form-label">Opened</div><div class="text-dim"><%= d.createdAt %></div></div>
-              <div><div class="form-label">Buyer ID</div><div>#<%= d.buyerId %></div></div>
-              <div><div class="form-label">Seller ID</div><div>#<%= d.sellerId %></div></div>
+              <div><div class="form-label">Order</div><div class="font-mono text-green">#<%= d.order_id %></div></div>
+              <!-- <div><div class="form-label">Opened</div><div class="text-dim"><%= d.createdAt %></div></div> -->
+              <div><div class="form-label">Buyer</div><div>@<%= d.buyer %></div></div>
+              <div><div class="form-label">Seller</div><div>@<%= d.seller %></div></div>
+              <div><div class="form-label">Item</div><div><%= d.item %></div></div>
+              <div><div class="form-label">Amount</div><div class="text-gold font-bold"><%= d.amount.toLocaleString() %> EGP</div></div>
               <div style="grid-column:1/-1"><div class="form-label">Reason</div><div><%= d.reason %></div></div>
-              <div style="grid-column:1/-1"><div class="form-label">Evidence</div><div class="text-dim"><%= d.evidence %></div></div>
             </div>
             <div class="form-group" style="margin-bottom:12px">
               <label class="form-label">Admin Resolution Note</label>

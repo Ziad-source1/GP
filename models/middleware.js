@@ -1,9 +1,20 @@
-const {updateWalletBalance} = require('./data');
+const {updateWalletBalance,getWalletByUserId} = require('./data');
 // Authentication middleware
 exports.requireLogin = (req, res, next) => {
   if (!req.session.user) {
     req.flash('error', 'Please login to access this page');
     return res.redirect('/auth/login');
+  }
+  next();
+};
+exports.updateBalance = async (req, res, next) => {
+
+  const wallet = await getWalletByUserId(req.session.user?.id);
+  if(wallet)
+  {
+    console.log("DBG::balance",wallet.balance);
+    req.session.user.balance = wallet.balance
+
   }
   next();
 };
@@ -49,7 +60,7 @@ exports.requireAdmin = (req, res, next) => {
 exports.fundWallet = async (req,res) => {
   const { amount } = req.body;
   const newBalance = Number(req.session.user.balance) + Number(amount);
-  req.session.user.balance = newBalance;
+  // req.session.user.balance = newBalance;
   await updateWalletBalance(req.session.user.id, newBalance);
   res.redirect('buyer/wallet');
 }

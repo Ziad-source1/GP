@@ -7,11 +7,19 @@
       <div class="dashboard-sub">Monitor all active escrow transactions</div>
     </div>
     <div class="stat-cards" style="margin-bottom:24px">
-      <div class="stat-card"><div class="stat-card-label">Total Held</div><div class="stat-card-value text-cyan">1,310 EGP</div></div>
-      <div class="stat-card"><div class="stat-card-label">Active Holds</div><div class="stat-card-value text-orange">2</div></div>
-      <div class="stat-card"><div class="stat-card-label">Released Today</div><div class="stat-card-value text-green">450 EGP</div></div>
-      <div class="stat-card"><div class="stat-card-label">Disputed</div><div class="stat-card-value" style="color:var(--red)">1</div></div>
-    </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Total Held</div>
+    <div class="stat-card-value text-cyan"><%= escrowStats.totalHeld %> EGP</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Active Holds</div>
+    <div class="stat-card-value text-orange"><%= escrowStats.activeHolds %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Released Today</div>
+    <div class="stat-card-value text-green"><%= escrowStats.releasedToday %> EGP</div>
+  </div>
+</div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Order</th><th>Item</th><th>Amount</th><th>Escrow Status</th><th>Buyer Confirmed</th><th>Date</th><th>Action</th></tr></thead>
@@ -22,13 +30,15 @@
               <td><%= o.title %></td>
               <td class="text-gold font-bold"><%= o.amount.toLocaleString() %> EGP</td>
               <td><span class="status status-<%= o.escrowStatus %>"><%= o.escrowStatus %></span></td>
-              <td><%= o.buyerConfirmed ? '<span class="text-green">✅ Yes</span>' : '<span class="text-muted">No</span>' %></td>
+              <td><%- o.buyerConfirmed ? '<span class="text-green">✅ Yes</span>' : '<span class="text-muted">No</span>' %></td>
               <td class="text-muted text-sm"><%= o.createdAt %></td>
               <td>
-                <% if (o.escrowStatus === 'held') { %>
-                  <button class="btn btn-green btn-sm">Force Release</button>
+                <% if (o.escrowStatus === 'held' || o.escrowStatus === 'pending') { %>
+                  <form action="/admin/escrow/<%= o.rawId %>/release" method="POST" style="display:inline">
+                    <button type="submit" class="btn btn-green btn-sm">Force Release</button>
+                  </form>
                 <% } else { %>
-                  <span class="text-muted text-sm">Released</span>
+                   <span class="text-muted text-sm"><%= o.escrowStatus %></span>
                 <% } %>
               </td>
             </tr>

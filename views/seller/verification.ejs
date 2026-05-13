@@ -11,13 +11,17 @@
       <div class="dashboard-sub">Verify your identity to start selling on LEVEL UP</div>
     </div>
 
-    <% if (user && user.verified) { %>
-      <div class="alert alert-success" style="font-size:15px;padding:16px 20px">
-        ✅ Your account is fully verified! You can create listings and sell freely.
-      </div>
-    <% } else { %>
-      <div class="alert alert-info">ℹ️ Verification is required before publishing listings. Review takes 24–48 hours.</div>
-    <% } %>
+<% if (user && user.is_verified == 1) { %>
+  <div class="alert alert-success" style="font-size:15px;padding:16px 20px">
+    ✅ Your account is fully verified! You can create listings and sell freely.
+  </div>
+<% } else if (user && user.is_seller == 1) { %>
+  <div class="alert alert-info" style="font-size:15px;padding:16px 20px">
+    ⏳ Your documents are under review. An admin will approve within 24–48 hours.
+  </div>
+<% } else { %>
+  <div class="alert alert-info">ℹ️ Verification is required before publishing listings. Review takes 24–48 hours.</div>
+<% } %>
 
     <!-- Steps -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px">

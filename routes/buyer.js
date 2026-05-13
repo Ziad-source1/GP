@@ -10,6 +10,7 @@ router.get('/wallet', buyerController.wallet);
 // router.get('/order-history', buyerController.orderHistory);
 router.get('/orders', buyerController.getOrders);
 router.get('/disputes', buyerController.disputes);
+router.post('/disputes', buyerController.postDispute);
 router.get('/notifications', buyerController.notifications);
 router.get('/reviews', buyerController.reviews);
 router.get('/checkout/:id', buyerController.checkout);

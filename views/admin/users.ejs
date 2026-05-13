@@ -25,7 +25,7 @@
               <td><div style="font-weight:600"><%= u.username %></div></td>
               <td class="text-dim text-sm"><%= u.email %></td>
               <td><span class="tag <%= u.role === 'admin' ? '' : u.role === 'seller' ? 'tag-green' : '' %>"><%= u.role %></span></td>
-              <td><%= u.verified ? '<span class="text-green font-bold">✅</span>' : '<span class="text-muted">—</span>' %></td>
+              <td><%- u.verified ? '<span class="text-green font-bold">✅</span>' : '<span class="text-muted">—</span>' %></td>
               <td class="text-gold font-bold"><%= (u.balance||0).toLocaleString() %> EGP</td>
               <td class="text-muted text-sm"><%= u.joinDate %></td>
               <td>

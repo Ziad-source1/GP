@@ -313,11 +313,13 @@ async function createOffer(sellerId, { price, description, stock, product_id, se
 async function getOrdersByBuyer(userId) {
   const [rows] = await db.query(
     `SELECT o.*, off.price as offer_price, off.description as offer_description,
-            p.name as product_name, s.name as service_name
+            p.name as product_name, s.name as service_name,
+            e.status as escrow_status
      FROM orders o
      JOIN offers off ON off.id = o.offer_id
      JOIN products p ON p.id = off.product_id
      JOIN services s ON s.id = off.service_id
+     LEFT JOIN escrow e ON e.order_id = o.id
      WHERE o.user_id = ?
      ORDER BY o.created_at DESC`,
     [userId]
@@ -434,11 +436,7 @@ async function createSellerGoal(sellerId, { goal_type, target_count, duration_da
 async function getDisputesByBuyer(buyerId) {
   try {
     const [rows] = await db.query(
-      `SELECT d.*, o.total_price, o.created_at as order_date
-       FROM disputes d
-       JOIN orders o ON o.id = d.order_id
-       WHERE d.buyer_id = ?
-       ORDER BY d.created_at DESC`,
+      `SELECT * from disputes where user_id = ?`,
       [buyerId]
     );
     return rows || [];
@@ -448,6 +446,11 @@ async function getDisputesByBuyer(buyerId) {
   }
 }
 
+async function postDisput(userId, orderId, description) {
+  await db.query('INSERT INTO disputes (order_id,description,status,user_id) values (?,?,?,?)', [orderId,description,false,userId])
+  const [rows] = await db.query("select * from disputes where user_id = ? ", [userId]);
+  return rows || []; 
+}
 async function getNotificationsByUser(userId) {
   try {
     const [rows] = await db.query(
@@ -510,6 +513,7 @@ module.exports = {
   getSellerGoals, createSellerGoal,
   
   // Disputes & Notifications (NEW)
+  postDisput,
   getDisputesByBuyer,
   getNotificationsByUser,
   createNotification
