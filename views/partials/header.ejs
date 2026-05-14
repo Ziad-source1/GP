@@ -35,43 +35,54 @@
     </form>
 
     <div class="nav-actions">
-      <% if (user) { %>
-        <div class="nav-wallet">
-          💰 <%= user.balance ? user.balance.toLocaleString() : '0' %> EGP
-        </div>
+  <% if (user) { %>
 
-        <div class="nav-dropdown" style="position:relative">
-          <div class="nav-avatar" title="<%= user.username %>">
-            <%= user.username.charAt(0).toUpperCase() %>
+    <%# Only show wallet balance if NOT admin %>
+    <% if (user.role !== 'admin') { %>
+      <div class="nav-wallet">
+        💰 <%= user.balance ? user.balance.toLocaleString() : '0' %> EGP
+      </div>
+    <% } %>
+
+    <div class="nav-dropdown" style="position:relative">
+      <div class="nav-avatar" title="<%= user.username %>">
+        <%= user.username.charAt(0).toUpperCase() %>
+      </div>
+      <div class="nav-dropdown-menu">
+        <div style="padding:8px 12px 4px; font-size:13px; font-weight:700; color:var(--text)"><%= user.username %></div>
+        <% if (user.badge) { %>
+          <div style="padding:0 12px 8px">
+            <% if (user.badge === 'premium') { %><span class="nav-badge badge-premium">⭐ Premium</span><% } %>
+            <% if (user.badge === 'admin') { %><span class="nav-badge badge-admin">🛡 Admin</span><% } %>
           </div>
-          <div class="nav-dropdown-menu">
-            <div style="padding:8px 12px 4px; font-size:13px; font-weight:700; color:var(--text)"><%= user.username %></div>
-            <% if (user.badge) { %>
-              <div style="padding:0 12px 8px">
-                <% if (user.badge === 'premium') { %><span class="nav-badge badge-premium">⭐ Premium</span><% } %>
-                <% if (user.badge === 'admin') { %><span class="nav-badge badge-admin">🛡 Admin</span><% } %>
-              </div>
-            <% } %>
-            <div class="separator"></div>
-            <% if (user.role === 'admin') { %>
-              <a href="/admin/dashboard">🛡 Admin Panel</a>
-            <% } %>
-            <% if (user.role === 'seller' || user.role === 'admin') { %>
-              <a href="/seller/dashboard">📊 Seller Dashboard</a>
-              <a href="/seller/create-listing">➕ Create Listing</a>
-            <% } %>
-            <a href="/buyer/dashboard">🎮 Buyer Dashboard</a>
-            <a href="/buyer/wallet">💰 My Wallet</a>
-            <a href="/buyer/notifications">🔔 Notifications</a>
-            <div class="separator"></div>
-            <a href="/auth/logout" style="color:var(--red)">⬆️ Logout</a>
-          </div>
-        </div>
-      <% } else { %>
-        <a href="/auth/login" class="btn-nav btn-nav-ghost">Login</a>
-        <a href="/auth/register" class="btn-nav btn-nav-green">Register</a>
-      <% } %>
+        <% } %>
+        <div class="separator"></div>
+
+        <% if (user.role === 'admin') { %>
+          <%# Admin sees ONLY these %>
+          <a href="/admin/dashboard">🛡 Admin Panel</a>
+          <!-- <a href="/buyer/notifications">🔔 Notifications</a> -->
+        <% } else { %>
+          <%# Non-admin sees their normal links %>
+          <% if (user.role === 'seller') { %>
+            <a href="/seller/dashboard">📊 Seller Dashboard</a>
+            <a href="/seller/create-listing">➕ Create Listing</a>
+          <% } %>
+          <a href="/buyer/dashboard">🎮 Buyer Dashboard</a>
+          <a href="/buyer/wallet">💰 My Wallet</a>
+          <a href="/buyer/notifications">🔔 Notifications</a>
+        <% } %>
+
+        <div class="separator"></div>
+        <a href="/auth/logout" style="color:var(--red)">⬆️ Logout</a>
+      </div>
     </div>
+
+  <% } else { %>
+    <a href="/auth/login" class="btn-nav btn-nav-ghost">Login</a>
+    <a href="/auth/register" class="btn-nav btn-nav-green">Register</a>
+  <% } %>
+</div>
 
     <button class="nav-toggle" aria-label="Menu">☰</button>
   </div>

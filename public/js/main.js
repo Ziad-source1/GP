@@ -179,3 +179,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  const avatar = dropdown.querySelector('.nav-avatar');
+  const menu = dropdown.querySelector('.nav-dropdown-menu');
+
+  avatar.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
+});

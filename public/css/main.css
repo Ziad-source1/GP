@@ -155,7 +155,15 @@ a:hover { color: var(--green-dim); }
   border-radius: var(--radius); padding: 8px; min-width: 180px;
   box-shadow: var(--shadow); display: none; z-index: 100;
 }
-.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
 .nav-dropdown-menu a {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 12px; border-radius: 6px; color: var(--text-dim);

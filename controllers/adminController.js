@@ -198,18 +198,19 @@ exports.disputeResolution = async (req, res) => {
               seller_u.username AS seller, seller_u.id AS sellerId
        FROM orders o
        JOIN users u ON o.user_id = u.id
-       JOIN disputes d ON o.user_id = d.user_id
+       JOIN disputes d ON d.order_id = o.id
        JOIN offers off ON o.offer_id = off.id
        JOIN products p ON off.product_id = p.id
        JOIN users seller_u ON off.user_id = seller_u.id
-       WHERE d.status = false AND d.order_id = o.id
+       WHERE d.status = false
        ORDER BY o.created_at DESC`
     );
     console.log("DBG::disputes",disputes);
 
     // const disputes = rows.map(d => ({
     //   id:        d.id,
-    //   orderId:   String(d.id).padStart(3, '0'),
+    //   orderId:   
+    // ing(d.id).padStart(3, '0'),
     //   item:      d.item,
     //   amount:    parseFloat(d.amount),
     //   buyer:     d.buyer,

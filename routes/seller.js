@@ -557,17 +557,72 @@ router.get('/earnings', async (req, res) => {
            AND YEAR(o.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)
            THEN o.total_price ELSE 0 END), 0) AS lastMonth,
          COALESCE(SUM(CASE WHEN o.is_paid = 0 THEN o.total_price ELSE 0 END), 0) AS pendingPayout,
-         0 AS totalWithdrawn
+         0 AS totalWithdrawn,
+COUNT(CASE WHEN o.is_paid = 1 THEN 1 END) AS totalOrders
        FROM orders o
        JOIN offers off ON o.offer_id = off.id
        WHERE off.user_id = ?`,
       [req.session.user.id]
     );
     
+    const [chartResult] = await db.query(
+  `SELECT DATE(o.created_at) as date, COALESCE(SUM(o.total_price), 0) as revenue
+   FROM orders o JOIN offers off ON o.offer_id = off.id
+   WHERE off.user_id = ? AND o.is_paid = 1
+     AND o.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+   GROUP BY DATE(o.created_at) ORDER BY date ASC`,
+  [req.session.user.id]
+);
+
+const [ordersChartResult] = await db.query(
+  `SELECT DATE(o.created_at) as date, COUNT(o.id) as count
+   FROM orders o JOIN offers off ON o.offer_id = off.id
+   WHERE off.user_id = ? AND o.is_paid = 1
+     AND o.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+   GROUP BY DATE(o.created_at) ORDER BY date ASC`,
+  [req.session.user.id]
+);
+
+const [topGamesResult] = await db.query(
+  `SELECT p.name, COUNT(o.id) as orderCount
+   FROM orders o JOIN offers off ON o.offer_id = off.id
+   JOIN products p ON off.product_id = p.id
+   WHERE off.user_id = ? AND o.is_paid = 1
+   GROUP BY p.id, p.name ORDER BY orderCount DESC LIMIT 5`,
+  [req.session.user.id]
+);
+const revenueChart = [];
+const ordersChart = [];
+for (let i = 6; i >= 0; i--) {
+  const date = new Date();
+  date.setDate(date.getDate() - i);
+  const dateStr = date.toISOString().split('T')[0];
+
+  const revFound = chartResult.find(r => {
+    const d = r.date instanceof Date ? r.date.toISOString().split('T')[0] : r.date.split('T')[0];
+    return d === dateStr;
+  });
+  revenueChart.push(revFound ? parseFloat(revFound.revenue) : 0);
+
+  const ordFound = ordersChartResult.find(r => {
+    const d = r.date instanceof Date ? r.date.toISOString().split('T')[0] : r.date.split('T')[0];
+    return d === dateStr;
+  });
+  ordersChart.push(ordFound ? parseInt(ordFound.count) : 0);
+}
+
+const topGames = topGamesResult.length > 0
+  ? topGamesResult.map(g => g.name)
+  : ['No sales yet'];
     res.render('seller/earnings', { 
       title: 'Earnings', 
       user: req.session.user,
-      analytics: earnings[0]
+      analytics: {
+  ...earnings[0],
+  revenueChart,
+  ordersChart,
+  topGames,
+}
     });
   } catch (error) {
     console.error('Earnings error:', error);
@@ -575,13 +630,13 @@ router.get('/earnings', async (req, res) => {
       title: 'Earnings', 
       user: req.session.user,
       analytics: {
-        totalRevenue: 0,
-        monthlyRevenue: 0,
-        thisMonth: 0,
-        lastMonth: 0,
-        pendingPayout: 0,
-        totalWithdrawn: 0
-      }
+  totalRevenue: 0, monthlyRevenue: 0, thisMonth: 0,
+  lastMonth: 0, pendingPayout: 0, totalWithdrawn: 0,
+  totalOrders: 0,
+  revenueChart: [0, 0, 0, 0, 0, 0, 0],
+  ordersChart:  [0, 0, 0, 0, 0, 0, 0],
+  topGames:     ['No sales yet'],
+}
     });
   }
 });

@@ -15,7 +15,11 @@
       <div class="stat-card">
         <div class="stat-card-label">This Month</div>
         <div class="stat-card-value text-green"><%= analytics.thisMonth.toLocaleString() %> EGP</div>
-        <div class="stat-card-change up">↑ <%= Math.round((analytics.thisMonth - analytics.lastMonth)/analytics.lastMonth*100) %>% MoM</div>
+        <% if (analytics.lastMonth > 0) { %>
+  <div class="stat-card-change up">↑ <%= Math.round((analytics.thisMonth - analytics.lastMonth)/analytics.lastMonth*100) %>% MoM</div>
+<% } else { %>
+  <div class="stat-card-change">— No data last month</div>
+<% } %>
       </div>
       <div class="stat-card">
         <div class="stat-card-label">Last Month</div>
