@@ -12,9 +12,9 @@
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;font-weight:700">Your Referral Link</div>
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
         <code style="flex:1;background:var(--black);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:14px">
-          https://levelup.gg/ref/<%= affiliate.code %>
+          http://localhost:8080/auth/register?ref_id=<%= affiliate.code %>
         </code>
-        <button class="btn btn-outline" data-copy="https://levelup.gg/ref/<%= affiliate.code %>">📋 Copy Link</button>
+        <button class="btn btn-outline" data-copy="http://localhost:8080/auth/register?ref_id=<%= affiliate.code %>">📋 Copy Link</button>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
         <span style="font-size:13px;color:var(--text-muted)">Share via:</span>

@@ -743,7 +743,7 @@ router.get('/affiliate', async (req, res) => {
       [req.session.user.id]
     );
     
-    const affiliateCode = `REF${req.session.user.id}${Date.now()}`;
+    const affiliateCode = req.session.user.id;
     
     res.render('seller/affiliate', { 
       title: 'Affiliate Program', 

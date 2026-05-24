@@ -88,11 +88,14 @@ exports.login = async (req, res) => {
 };
 
 exports.registerPage = (req, res) => {
+  const ref_id = req.query.ref_id;
+  console.log("DBG:: register page ref_id",ref_id)
   res.render('auth/register', { 
     title: 'Create Account — LEVEL UP',
     error: req.flash('error'),
     success: req.flash('success'),
-    user: null
+    user: null,
+    ref_id :ref_id
   });
 };
 
@@ -149,6 +152,17 @@ exports.register = async (req, res) => {
     );
     
     console.log('✅ SUCCESS! User created, ID:', result.insertId);
+    //updare query to update sellers balance 
+    const ref_id = req.query.ref_id;
+    console.log("DBG::ref_id",ref_id)
+    if(ref_id)
+    {
+      const wallet = await getWalletByUserId(ref_id);
+      const new_balance = Number(wallet.balance) + 50;
+      console.log("DBG::new_balance",new_balance);
+      await db.query('UPDATE wallet set balance= ? where user_id=?',[new_balance,ref_id])
+
+    }
     req.flash('success', 'Account created! Please login.');
     return res.redirect('/auth/login');
     

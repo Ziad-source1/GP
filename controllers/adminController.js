@@ -207,22 +207,6 @@ exports.disputeResolution = async (req, res) => {
     );
     console.log("DBG::disputes",disputes);
 
-    // const disputes = rows.map(d => ({
-    //   id:        d.id,
-    //   orderId:   
-    // ing(d.id).padStart(3, '0'),
-    //   item:      d.item,
-    //   amount:    parseFloat(d.amount),
-    //   buyer:     d.buyer,
-    //   buyerId:   d.buyerId,
-    //   seller:    d.seller,
-    //   sellerId:  d.sellerId,
-    //   reason:    d.reason || '—',
-    //   status:    'disputed',
-    //   createdAt: d.created_at ? new Date(d.created_at).toISOString().split('T')[0] : '—',
-    // }));
-    // const [disputes] = db.query('select * disputes')
-
     res.render('admin/disputes', {
       title: 'Dispute Resolution — LEVEL UP',
       user: req.session.user,
