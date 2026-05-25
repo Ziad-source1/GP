@@ -38,11 +38,13 @@
               <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
                 <% if (o.status === 'completed') { %>
                   <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--green)">✅ Order Complete</span>
-                <% } else { %>
-                  <form action="/seller/orders/<%= o.id %>/complete" method="POST" style="display:inline">
-                    <button type="submit" class="btn btn-green btn-sm">📦 Mark as Complete</button>
-                  </form>
-                <% } %>
+                  <% } else if (o.status == 'pending') { %>
+                    <form action="/seller/orders/<%= o.id %>/complete" method="POST" style="display:inline">
+                      <button type="submit" class="btn btn-green btn-sm">📦 Mark as Complete</button>
+                    </form>
+                    <% } else { %>
+                      <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--gold)">⌚ awaiting buyer</span>
+                <% }  %>
                 <!-- <a href="/seller/chat/<%= o.id %>" class="btn btn-ghost btn-sm">💬 Chat with Buyer</a> -->
                 <% if (o.dispute) { %>
                   <button class="btn btn-red btn-sm">⚖️ View Dispute</button>

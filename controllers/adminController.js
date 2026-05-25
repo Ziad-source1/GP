@@ -265,10 +265,12 @@ exports.fraudDetection = async (req, res) => {
 };
 
 // ── Commission Settings ────────────────────────────────────────────────────
-exports.commissionControl = (req, res) => {
+exports.commissionControl = async (req, res) => {
+  const [[{balance: commission}]] = await db.query('SELECT balance FROM wallet where user_id = 179');
   res.render('admin/commission', {
     title: 'Commission Control — LEVEL UP',
     user: req.session.user,
+    commission : commission
   });
 };
 

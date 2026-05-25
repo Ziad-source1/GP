@@ -1,4 +1,6 @@
-const { getOrdersByBuyer, getWalletByUserId, getOfferById, postDisput, getDisputesByBuyer } = require('../models/data');
+const { getOrdersByBuyer, getWalletByUserId, getOfferById, postDisput, getDisputesByBuyer,getSellerIdByOrder } = require('../models/data');
+
+const db = require('../models/db');
 
 exports.dashboard = async (req, res) => {
   try {
@@ -30,6 +32,73 @@ exports.wallet = async (req, res) => {
   }
 };
 
+exports.completeOrders = async (req, res) => {
+  try {
+    const orderId = req.params.order_id;
+
+    // Check if escrow row exists
+    const [[existing]] = await db.query(
+      `SELECT id FROM escrow WHERE order_id = ?`, [orderId]
+    );
+
+    if (existing) {
+      await db.query(
+        `UPDATE escrow SET status = 'released', released_at = NOW() WHERE order_id = ?`,
+        [orderId]
+      );
+    } else {
+      const [[order]] = await db.query(
+        `SELECT total_price FROM orders WHERE id = ?`, [orderId]
+      );
+      await db.query(
+        `INSERT INTO escrow (order_id, amount, status, released_at) VALUES (?, ?, 'released', NOW())`,
+        [orderId, order.total_price]
+      );
+    }
+
+    const [[order]] = await db.query(
+      'SELECT * from orders where id = ? ', [orderId]
+    )
+
+    console.log("DBG::order",order);
+    
+    // subtract buyer wallet
+    // const buyerId = order.user_id;
+    const buyerId = req.session.user.id;
+    const [[{balance: buyerBalance}]] = await db.query('SELECT balance from wallet where user_id = ? ',[buyerId]);
+    console.log("DBG::buyerBalance ", buyerBalance )
+    const newBuyerBalance = Number(buyerBalance) - Number(order.total_price);
+    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newBuyerBalance, buyerId]);
+    
+    // add to seller wallet
+    // const sellerId = req.session.user.id;
+    const {user_id:sellerId} = await getSellerIdByOrder(orderId);
+    const [[{plan}]] = await db.query('SELECT plan from users where id = ?' , [sellerId]);
+    console.log("DBG::seller_id from controller = ",sellerId);
+    const [[{balance: sellerBalance}]] = await db.query('SELECT balance from wallet where user_id = ?' , [sellerId]);
+    const total_price = Number(order.total_price);
+    // const plan = Number(req.session.user.plan)
+    console.log("DBG::commission_rate plan ", plan);
+    const commission_rate = plan === 0 ? 0.1 : plan === 1 ? 0.07 : 0.04;
+    const commission = total_price * commission_rate;
+    console.log("DBG::commission ", commission);
+    const newSellerBalance = Number(sellerBalance) + total_price - commission;
+    console.log("DBG::newsellerBalance " , newSellerBalance);
+    req.session.user.balance = newSellerBalance;
+    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newSellerBalance, sellerId]);
+    
+    const [[{balance: adminBalance}]] = await db.query('SELECT balance from wallet where user_id = 179 ');
+    const new_balance = Number(adminBalance) + commission;
+    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = 179`,[new_balance]);
+
+    await db.query(`UPDATE orders SET is_paid = 1 WHERE id = ?`, [orderId]);
+    req.flash('success', `✅ Order #${orderId} marked as complete.`);
+  } catch (err) {
+    console.error('Complete order error:', err);
+    req.flash('error', '❌ Failed to complete order.');
+  }
+  res.redirect('/buyer/orders');
+};
 
 exports.getOrders = async (req, res) => {
   try {

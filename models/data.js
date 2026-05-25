@@ -190,6 +190,17 @@ async function getSellerByUserId(userId) {
   return rows[0] || null;
 }
 
+async function getSellerIdByOrder(orderId) {
+  const [rows] = await db.query(
+    `SELECT user_id 
+     FROM offers  
+     WHERE id = (SELECT offer_id FROM orders WHERE id = ?)`,
+    [orderId]
+  );
+  console.log("DBG::sellerId = ",rows[0]);
+  return rows[0] || null;
+} 
+
 async function getSellerById(sellerId) {
   const [rows] = await db.query(
     `SELECT s.*, u.username, u.email, u.role, u.is_verified 
@@ -490,7 +501,7 @@ module.exports = {
   createUser, updateUser,
   
   // Sellers
-  getSellerByUserId, getSellerById, createSeller,
+  getSellerByUserId, getSellerById, createSeller,getSellerIdByOrder,
   
   // Products & Services
   getAllProducts, getProductById, createProduct,

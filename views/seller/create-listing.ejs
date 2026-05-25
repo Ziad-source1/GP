@@ -7,12 +7,12 @@
       <div class="dashboard-sub">List your product in the marketplace</div>
     </div>
 
-    <% if (locals.error) { %>
+    <!-- <% if (locals.error) { %>
       <div class="alert alert-error"><%= error %></div>
     <% } %>
     <% if (locals.success) { %>
       <div class="alert alert-success"><%= success %></div>
-    <% } %>
+    <% } %> -->
 
     <form action="/seller/create-listing" method="POST" enctype="multipart/form-data">
       <div class="grid-2" style="gap:24px;align-items:start">

@@ -87,6 +87,14 @@ router.post('/become-seller', requireLogin, async (req, res) => {
   }
 });
 
+router.post('/upgrade_plane/:planId', requireLogin, async (req, res) => {
+  const plan_id = req.params.planId
+  req.session.user.plane = plan_id;
+  await db.query('UPDATE users SET plan = ?  WHERE id = ? ', [plan_id,req.session.user.id]);
+  res.redirect('/seller/dashboard');
+
+});
+
 router.get('/premium', requireLogin, (req, res) => {
   const plans = [
     { name: 'Basic', price: 0, commission: 10, features: ['5 Active Listings', 'Basic Analytics', 'Standard Support'], popular: false },
@@ -507,13 +515,12 @@ router.get('/orders', async (req, res) => {
        ORDER BY o.created_at DESC`,
       [req.session.user.id]
     );
-
     const orders = orderRows.map(o => ({
       id:           o.id,
       title:        o.product_title,
       buyer:        o.buyer_name,
       amount:       parseFloat(o.total_price),
-      status:       o.is_paid === 1 ? 'completed' : 'pending',
+      status:      o.is_paid === 1 ? "completed" : o.is_paid == 2 ? "awaiting buyer confimation" : "pending",
       escrowStatus: o.escrow_status || 'held',
       review:       o.user_review || '',
       dispute:      false,
@@ -917,56 +924,9 @@ router.get('/streak', async (req, res) => {
 
 // Mark order as complete
 router.post('/orders/:id/complete', requireLogin, async (req, res) => {
-  try {
     const orderId = req.params.id;
-
-    // Check if escrow row exists
-    const [[existing]] = await db.query(
-      `SELECT id FROM escrow WHERE order_id = ?`, [orderId]
-    );
-
-    if (existing) {
-      await db.query(
-        `UPDATE escrow SET status = 'released', released_at = NOW() WHERE order_id = ?`,
-        [orderId]
-      );
-    } else {
-      const [[order]] = await db.query(
-        `SELECT total_price FROM orders WHERE id = ?`, [orderId]
-      );
-      await db.query(
-        `INSERT INTO escrow (order_id, amount, status, released_at) VALUES (?, ?, 'released', NOW())`,
-        [orderId, order.total_price]
-      );
-    }
-
-    const [[order]] = await db.query(
-      'SELECT * from orders where id = ? ', [orderId]
-    )
-
-    console.log("DBG::order",order);
-    
-    // subtract buyer wallet
-    const buyerId = order.user_id;
-    const [[{balance: buyerBalance}]] = await db.query('SELECT balance from wallet where user_id = ? ',[buyerId]);
-    console.log("DBG::buyerBalance ", buyerBalance )
-    const newBuyerBalance = Number(buyerBalance) - Number(order.total_price);
-    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newBuyerBalance, buyerId]);
-    
-    // add to seller wallet
-    const sellerId = req.session.user.id;
-    const [[{balance: sellerBalance}]] = await db.query('SELECT balance from wallet where user_id = ?' , [sellerId]);
-    const newSellerBalance = Number(sellerBalance) + Number(order.total_price)
-    console.log("DBG::newsellerBalance " , newSellerBalance);
-    req.session.user.balance = newSellerBalance;
-    await db.query(`UPDATE wallet SET balance = ? WHERE user_id = ?`, [newSellerBalance, sellerId]);
-    await db.query(`UPDATE orders SET is_paid = 1 WHERE id = ?`, [orderId]);
-    req.flash('success', `✅ Order #${orderId} marked as complete.`);
-  } catch (err) {
-    console.error('Complete order error:', err);
-    req.flash('error', '❌ Failed to complete order.');
-  }
-  res.redirect('/seller/orders');
+    await db.query(`UPDATE orders SET is_paid = 2 WHERE id = ?`, [orderId]);
+    res.redirect('/seller/orders');
 });
 
 // Chat page
