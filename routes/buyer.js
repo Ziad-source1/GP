@@ -14,6 +14,9 @@ router.get('/disputes', buyerController.disputes);
 router.post('/disputes', buyerController.postDispute);
 router.get('/notifications', buyerController.notifications);
 router.get('/reviews', buyerController.reviews);
+router.get('/reviews', buyerController.reviews);
+router.get('/orders/:order_id/review',  buyerController.getReviewForm);
+router.post('/orders/:order_id/review', buyerController.postReview);
 router.get('/checkout/:id', buyerController.checkout);
 router.post('/place-order', buyerController.placeOrder);
 

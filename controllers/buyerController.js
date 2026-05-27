@@ -1,4 +1,4 @@
-const { getOrdersByBuyer, getWalletByUserId, getOfferById, postDisput, getDisputesByBuyer,getSellerIdByOrder } = require('../models/data');
+const { getOrdersByBuyer, getWalletByUserId, getOfferById, postDisput, getDisputesByBuyer, getSellerIdByOrder,saveOrderReview, getReviewsByBuyer, hasReview} = require('../models/data');
 
 const db = require('../models/db');
 
@@ -125,8 +125,14 @@ exports.notifications = (req, res) => {
   res.render('buyer/notifications', { title: 'Notifications', notifications: [], user: req.session.user });
 };
 
-exports.reviews = (req, res) => {
-  res.render('buyer/reviews', { title: 'My Reviews', reviews: [], user: req.session.user });
+exports.reviews = async (req, res) => {
+  try {
+    const reviews = await getReviewsByBuyer(req.session.user.id);
+    res.render('buyer/reviews', { title: 'My Reviews', reviews, user: req.session.user });
+  } catch (err) {
+    console.error(err);
+    res.render('buyer/reviews', { title: 'My Reviews', reviews: [], user: req.session.user });
+  }
 };
 
 exports.checkout = async (req, res) => {
@@ -167,5 +173,62 @@ exports.placeOrder = async (req, res) => {
     console.error('Place order error:', error);
     req.flash('error', 'Order failed. Please try again.');
     res.redirect('/marketplace');
+  }
+};
+
+exports.getReviewForm = async (req, res) => {
+  try {
+    const orderId = req.params.order_id;
+    const [[order]] = await db.query(
+      `SELECT o.*, p.name as product_name
+       FROM   orders o
+       JOIN   offers off ON off.id = o.offer_id
+       JOIN   products p ON p.id = off.product_id
+       WHERE  o.id = ? AND o.user_id = ? AND o.is_paid = 1`,
+      [orderId, req.session.user.id]
+    );
+
+    if (!order) {
+      req.flash('error', 'Order not found or not completed yet.');
+      return res.redirect('/buyer/orders');
+    }
+    if (await hasReview(orderId)) {
+      req.flash('error', 'You already reviewed this order.');
+      return res.redirect('/buyer/reviews');
+    }
+
+    res.render('buyer/review-form', { title: 'Leave a Review', order, user: req.session.user });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/buyer/orders');
+  }
+};
+
+exports.postReview = async (req, res) => {
+  try {
+    const orderId = req.params.order_id;
+    const { comment } = req.body;
+
+    if (!comment || comment.trim() === '') {
+      req.flash('error', 'Review comment cannot be empty.');
+      return res.redirect(`/buyer/orders/${orderId}/review`);
+    }
+    if (await hasReview(orderId)) {
+      req.flash('error', 'You already reviewed this order.');
+      return res.redirect('/buyer/reviews');
+    }
+
+    const saved = await saveOrderReview(orderId, req.session.user.id, comment.trim());
+    if (!saved) {
+      req.flash('error', 'Could not save review. Make sure the order is completed.');
+      return res.redirect('/buyer/orders');
+    }
+
+    req.flash('success', '✅ Review submitted! Thank you.');
+    res.redirect('/buyer/reviews');
+  } catch (err) {
+    console.error('Review error:', err);
+    req.flash('error', 'Failed to submit review.');
+    res.redirect('/buyer/orders');
   }
 };

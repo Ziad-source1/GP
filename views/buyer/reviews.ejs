@@ -6,12 +6,37 @@
       <div class="dashboard-title">⭐ My Reviews</div>
       <div class="dashboard-sub">Reviews you've left for sellers</div>
     </div>
-    <div class="empty-state" style="padding:80px">
-      <div class="empty-state-icon">⭐</div>
-      <div class="empty-state-title">No reviews yet</div>
-      <p style="color:var(--text-muted)">Complete an order and leave your first review to help the community!</p>
-      <a href="/buyer/orders" class="btn btn-green" style="margin-top:16px">View Completed Orders</a>
-    </div>
+
+    <% if (reviews.length === 0) { %>
+      <div class="empty-state" style="padding:80px">
+        <div class="empty-state-icon">⭐</div>
+        <div class="empty-state-title">No reviews yet</div>
+        <p style="color:var(--text-muted)">Complete an order and leave your first review!</p>
+        <a href="/buyer/orders" class="btn btn-green" style="margin-top:16px">View Completed Orders</a>
+      </div>
+    <% } else { %>
+      <div class="orders-list">
+        <% reviews.forEach(r => { %>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="font-mono text-green text-sm" style="margin-bottom:4px">Order #<%= r.id %></div>
+                  <div style="font-size:18px;font-weight:700"><%= r.product_name %></div>
+                </div>
+                <div style="font-size:12px;color:var(--text-muted)">
+                  <%= new Date(r.created_at).toISOString().split('T')[0] %>
+                </div>
+              </div>
+              <p style="margin-top:12px;color:var(--text-muted);font-size:14px;font-style:italic;border-left:3px solid var(--gold);padding-left:12px">
+                "<%= r.user_review %>"
+              </p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
   </div>
 </div>
 <%- include('../partials/footer') %>

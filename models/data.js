@@ -295,6 +295,35 @@ async function getReviewsByOfferId(offerId) {
   return rows || null;
 }
 
+async function saveOrderReview(orderId, buyerId, comment) {
+  const [result] = await db.query(
+    `UPDATE orders SET user_review = ?
+     WHERE id = ? AND user_id = ? AND is_paid = 1`,
+    [comment, orderId, buyerId]
+  );
+  return result.affectedRows > 0;
+}
+
+async function getReviewsByBuyer(buyerId) {
+  const [rows] = await db.query(
+    `SELECT o.id, o.total_price, o.user_review, o.created_at,
+            p.name as product_name
+     FROM   orders o
+     JOIN   offers off ON off.id = o.offer_id
+     JOIN   products p ON p.id = off.product_id
+     WHERE  o.user_id = ? AND o.user_review IS NOT NULL AND o.user_review != ''
+     ORDER  BY o.created_at DESC`,
+    [buyerId]
+  );
+  return rows;
+}
+
+async function hasReview(orderId) {
+  const [[row]] = await db.query(
+    `SELECT user_review FROM orders WHERE id = ?`, [orderId]
+  );
+  return !!(row && row.user_review && row.user_review.trim() !== '');
+}
 
 async function getOfferById(id) {
   const [rows] = await db.query(
@@ -538,5 +567,12 @@ module.exports = {
   postDisput,
   getDisputesByBuyer,
   getNotificationsByUser,
-  createNotification
+  createNotification,
+
+  // inside module.exports, add to Orders section:
+  saveOrderReview,
+getReviewsByBuyer,
+hasReview,
+
 };
+

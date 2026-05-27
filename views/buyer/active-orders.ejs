@@ -59,6 +59,11 @@
             <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
               <% if (o.escrow_status === 'released' || o.is_paid == 1) { %>
                 <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--green)">✅ Order Complete</span>
+                <% if (o.user_review && o.user_review.trim() !== '') { %>
+                  <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--gold)">⭐ Reviewed</span>
+                <% } else { %>
+                  <a href="/buyer/orders/<%= o.id %>/review" class="btn btn-yellow btn-sm">⭐ Leave a Review</a>
+                <% } %>
               <% } else { %>
                 <button class="btn btn-ghost btn-sm">💬 Chat with Seller</button>
                 <a href="/buyer/disputes" class="sidebar-link <%= currentPath === '/buyer/disputes' ? 'active' : '' %>">

@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<div class="dashboard-wrap">
+  <%- include('../partials/buyer-sidebar') %>
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div class="dashboard-title">⭐ Leave a Review</div>
+      <div class="dashboard-sub">Order #<%= order.id %> — <%= order.product_name %></div>
+    </div>
+
+    <div class="card" style="max-width:560px">
+      <div class="card-body">
+
+        <% if (typeof messages !== 'undefined' && messages.error) { %>
+          <div class="alert alert-error" style="margin-bottom:16px"><%= messages.error %></div>
+        <% } %>
+
+        <form method="POST" action="/buyer/orders/<%= order.id %>/review">
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-weight:600;margin-bottom:8px;font-size:15px">
+              Your Review <span style="color:#e74c3c">*</span>
+            </label>
+            <textarea
+              name="comment"
+              rows="5"
+              required
+              style="width:100%;background:var(--bg-card);border:1px solid var(--border);
+                     color:var(--text);border-radius:8px;padding:12px;
+                     resize:vertical;font-size:14px;font-family:inherit"
+              placeholder="How was your experience with this seller?"></textarea>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <button type="submit" class="btn btn-green">Submit Review</button>
+            <a href="/buyer/orders" class="btn btn-ghost">Cancel</a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+<%- include('../partials/footer') %>
