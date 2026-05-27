@@ -1,4 +1,4 @@
-const { getAllOffers, getOfferById, getOffersBySeller, reviews } = require('../models/data');
+const { getAllOffers, getOfferById, getOffersBySeller, getReviewsByOfferId} = require('../models/data');
 
 // Browse marketplace
 exports.browse = async (req, res) => {
@@ -132,6 +132,10 @@ exports.listing = async (req, res) => {
       total_sales: 0,
       member_since: new Date().toISOString().split('T')[0]
     };
+
+    const reviews = await getReviewsByOfferId(offerId)
+
+    console.log("DBG::Reviews = ",reviews)
     
     res.render('marketplace/listing', { 
       title: listing.title + ' — LEVEL UP', 

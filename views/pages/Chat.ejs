@@ -1,0 +1,104 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-wrap">
+  <div class="dashboard-main" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    
+    <div class="dashboard-header" style="margin-bottom: 20px;">
+      <div class="dashboard-title">💬 Order Chat</div>
+      <div class="dashboard-sub">Order ID: <span class="text-green" id="room-id">#<%= orderId %></span></div>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; height: 500px; padding: 0; overflow: hidden; background: #1a1f26; border: 1px solid #2d3540;">
+      
+      <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;">
+        </div>
+
+      <div style="padding: 15px; background: #13171c; border-top: 1px solid #2d3540; display: flex; gap: 10px;">
+        <input type="text" id="message-input" placeholder="Type your message here..." style="flex: 1; background: #1a1f26; border: 1px solid #2d3540; color: #fff; padding: 12px 16px; border-radius: 6px; outline: none;">
+        <button id="send-btn" class="btn btn-green" style="padding: 0 24px;">Send</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  const room = "<%= orderId %>";
+  const sender = "<%= username %>";
+
+  // الاتصال التلقائي بالسيرفر
+  const socket = io();
+
+  const chatMessages = document.getElementById('chat-messages');
+  const messageInput = document.getElementById('message-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  // 1. الانضمام لغرفة الـ Order فوراً
+  socket.emit('join_room', room);
+
+  // 2. سحب رسايل الشات القديمة المخزنة في Mongo Atlas للـ Order ده
+  fetch(`/api/messages/${room}`)
+    .then(res => res.json())
+    .then(messages => {
+      messages.forEach(msg => appendMessage(msg));
+      scrollToBottom();
+    })
+    .catch(err => console.error('Error loading history:', err));
+
+  // 3. عند الضغط على زرار الإرسال
+  sendBtn.addEventListener('click', sendMessage);
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+
+  function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    const messageData = { room, sender, text };
+
+    // بث الرسالة للسيرفر
+    socket.emit('send_message', messageData);
+    messageInput.value = '';
+  }
+
+  // 4. الاستماع لأي رسالة جديدة بتتبعت في نفس الروم وعرضها فوراً
+  socket.on('receive_message', (data) => {
+    appendMessage(data);
+    scrollToBottom();
+  });
+
+  // دالة تنسيق الرسائل على الشاشة
+  function appendMessage(data) {
+    const msgDiv = document.createElement('div');
+    const isMe = data.sender === sender;
+
+    msgDiv.style.alignSelf = isMe ? 'flex-end' : 'flex-start';
+    msgDiv.style.maxWidth = '70%';
+    msgDiv.style.padding = '10px 14px';
+    msgDiv.style.borderRadius = '8px';
+    msgDiv.style.fontSize = '14px';
+    
+    if (isMe) {
+      msgDiv.style.background = '#00e676'; // رسايلك باللون الأخضر المميز لمشروعك
+      msgDiv.style.color = '#000';
+      msgDiv.style.fontWeight = '500';
+    } else {
+      msgDiv.style.background = '#252d37'; // رسايل الطرف التاني بلون داكن متناسق
+      msgDiv.style.color = '#fff';
+      msgDiv.style.border = '1px solid #343f4e';
+    }
+
+    msgDiv.innerHTML = `<strong style="font-size: 11px; display: block; margin-bottom: 4px; color: ${isMe ? '#000' : '#ffb300'}">${data.sender}</strong> ${data.text}`;
+    chatMessages.appendChild(msgDiv);
+  }
+
+  function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+</script>
+
+<%- include('../partials/footer') %>

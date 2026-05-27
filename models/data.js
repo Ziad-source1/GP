@@ -285,6 +285,17 @@ async function getAllOffers() {
   return rows;
 }
 
+
+async function getReviewsByOfferId(offerId) {
+  console.log("DBG::offer_id = ", offerId)
+  const [rows] = await db.query(
+    `SELECT users.username , orders.user_review as comment FROM orders, users WHERE orders.offer_id = ? AND orders.user_id = users.id AND orders.user_review!='';`,[offerId]
+  )
+  console.log("DBG::reviews = ",rows);
+  return rows || null;
+}
+
+
 async function getOfferById(id) {
   const [rows] = await db.query(
     `SELECT o.*, p.name as product_name, s.name as service_name, u.username as seller_name, p.image as product_image
@@ -508,7 +519,7 @@ module.exports = {
   getAllServices, getServiceById,
   
   // Offers
-  getAllOffers, getOfferById, getOffersBySeller, createOffer, reviews,
+  getAllOffers, getOfferById, getOffersBySeller, createOffer, reviews,getReviewsByOfferId,
   
   // Orders
   getOrdersByBuyer, getOrdersBySeller, getOrderById,

@@ -115,10 +115,10 @@
                 <div class="review-header">
                   <div class="review-avatar">B</div>
                   <div>
-                    <div class="review-name">Verified Buyer</div>
-                    <div class="stars" style="font-size:12px"><%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %></div>
+                    <div class="review-name"><%= review.username%></div>
+                    <!-- <div class="stars" style="font-size:12px"><%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %></div> -->
                   </div>
-                  <div class="review-date"><%= review.createdAt %></div>
+                  <!-- <div class="review-date"><%= review.createdAt %></div> -->
                 </div>
                 <div class="review-text"><%= review.comment %></div>
               </div>
