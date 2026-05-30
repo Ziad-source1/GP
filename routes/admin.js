@@ -19,4 +19,7 @@ router.post('/verification/:id/approve', adminController.approveVerification);
 router.post('/verification/:id/reject',  adminController.rejectVerification);
 router.post('/escrow/:id/release', adminController.releaseEscrow);
 
+router.post('/disputes/:id/refund-buyer',   adminController.resolveRefundBuyer);
+router.post('/disputes/:id/release-seller', adminController.resolveReleaseSeller);
+
 module.exports = router;

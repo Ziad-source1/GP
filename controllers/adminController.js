@@ -190,21 +190,21 @@ exports.escrowMonitoring = async (req, res) => {
 exports.disputeResolution = async (req, res) => {
   try {
     const [disputes] = await db.query(
-      `SELECT o.id AS id, o.total_price AS amount,
-              u.username AS buyer, u.id AS buyerId,
-              p.name AS item,
-              d.status AS status,
-              d.description AS reason,
-              seller_u.username AS seller, seller_u.id AS sellerId
-       FROM orders o
-       JOIN users u ON o.user_id = u.id
-       JOIN disputes d ON d.order_id = o.id
-       JOIN offers off ON o.offer_id = off.id
-       JOIN products p ON off.product_id = p.id
-       JOIN users seller_u ON off.user_id = seller_u.id
-       WHERE d.status = false
-       ORDER BY o.created_at DESC`
-    );
+  `SELECT d.id AS disputeId, o.id AS id, o.total_price AS amount,
+          u.username AS buyer, u.id AS buyerId,
+          p.name AS item,
+          d.status AS status,
+          d.description AS reason,
+          seller_u.username AS seller, seller_u.id AS sellerId
+   FROM orders o
+   JOIN users u ON o.user_id = u.id
+   JOIN disputes d ON d.order_id = o.id
+   JOIN offers off ON o.offer_id = off.id
+   JOIN products p ON off.product_id = p.id
+   JOIN users seller_u ON off.user_id = seller_u.id
+   WHERE d.status = 0
+   ORDER BY o.created_at DESC`
+);
     console.log("DBG::disputes",disputes);
 
     res.render('admin/disputes', {
@@ -367,4 +367,96 @@ exports.releaseEscrow = async (req, res) => {
     req.flash('error', '❌ Failed to release escrow.');
   }
   res.redirect('/admin/escrow');
+};
+
+// ── Dispute: Refund Buyer ──────────────────────────────────────────────────
+exports.resolveRefundBuyer = async (req, res) => {
+  try {
+    const { id } = req.params; // dispute id
+
+    // Get dispute + order + buyer info
+    const [[dispute]] = await db.query(
+      `SELECT d.id, d.order_id, o.total_price, o.user_id AS buyerId
+       FROM disputes d
+       JOIN orders o ON o.id = d.order_id
+       WHERE d.id = ?`, [id]
+    );
+
+    if (!dispute) {
+      req.flash('error', 'Dispute not found.');
+      return res.redirect('/admin/disputes');
+    }
+
+    // 1. Refund buyer wallet
+    await db.query(
+      `UPDATE wallet SET balance = balance + ? WHERE user_id = ?`,
+      [dispute.total_price, dispute.buyerId]
+    );
+
+    // 2. Update escrow to refunded
+    await db.query(
+      `UPDATE escrow SET status = 'refunded', released_at = NOW() WHERE order_id = ?`,
+      [dispute.order_id]
+    );
+
+    // 3. Close the dispute
+    await db.query(
+      `UPDATE disputes SET status = 1 WHERE id = ?`, [id]
+    );
+
+    req.flash('success', `✅ Dispute #${id} resolved — buyer refunded.`);
+  } catch (err) {
+    console.error('Resolve refund error:', err);
+    req.flash('error', '❌ Failed to resolve dispute.');
+  }
+  res.redirect('/admin/disputes');
+};
+
+// ── Dispute: Release to Seller ─────────────────────────────────────────────
+exports.resolveReleaseSeller = async (req, res) => {
+  try {
+    const { id } = req.params; // dispute id
+
+    // Get dispute + order + seller info
+    const [[dispute]] = await db.query(
+      `SELECT d.id, d.order_id, o.total_price, off.user_id AS sellerId
+       FROM disputes d
+       JOIN orders o ON o.id = d.order_id
+       JOIN offers off ON off.id = o.offer_id
+       WHERE d.id = ?`, [id]
+    );
+
+    if (!dispute) {
+      req.flash('error', 'Dispute not found.');
+      return res.redirect('/admin/disputes');
+    }
+
+    // 1. Pay seller wallet
+    await db.query(
+      `UPDATE wallet SET balance = balance + ? WHERE user_id = ?`,
+      [dispute.total_price, dispute.sellerId]
+    );
+
+    // 2. Update escrow to released
+    await db.query(
+      `UPDATE escrow SET status = 'released', released_at = NOW() WHERE order_id = ?`,
+      [dispute.order_id]
+    );
+
+    // 3. Mark order as paid
+    await db.query(
+      `UPDATE orders SET is_paid = 1 WHERE id = ?`, [dispute.order_id]
+    );
+
+    // 4. Close the dispute
+    await db.query(
+      `UPDATE disputes SET status = 1 WHERE id = ?`, [id]
+    );
+
+    req.flash('success', `✅ Dispute #${id} resolved — funds released to seller.`);
+  } catch (err) {
+    console.error('Resolve release error:', err);
+    req.flash('error', '❌ Failed to resolve dispute.');
+  }
+  res.redirect('/admin/disputes');
 };

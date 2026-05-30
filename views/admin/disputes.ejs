@@ -27,12 +27,17 @@
               <label class="form-label">Admin Resolution Note</label>
               <textarea class="form-control" rows="3" placeholder="Explain your decision..."></textarea>
             </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn btn-green">✅ Resolve — Refund Buyer</button>
-              <button class="btn btn-gold">💰 Resolve — Release to Seller</button>
-              <!-- <button class="btn btn-ghost btn-sm">📧 Contact Both Parties</button> -->
-              <!-- <button class="btn btn-ghost btn-sm">⏳ Mark Under Review</button> -->
-            </div>
+           <div style="display:flex;gap:10px;flex-wrap:wrap">
+
+  <form method="POST" action="/admin/disputes/<%= d.disputeId %>/refund-buyer">
+    <button type="submit" class="btn btn-green">✅ Resolve — Refund Buyer</button>
+  </form>
+
+  <form method="POST" action="/admin/disputes/<%= d.disputeId %>/release-seller">
+    <button type="submit" class="btn btn-gold">💰 Resolve — Release to Seller</button>
+  </form>
+
+</div>
           </div>
         </div>
       <% }) %>
